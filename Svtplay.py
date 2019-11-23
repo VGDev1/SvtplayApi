@@ -31,8 +31,8 @@ def createMostPopularAdvanced(Simple, Advanced):
         dict[i['name']] = Simple.get(i['name'])[0], Simple.get(i['name'])[1], i['id']
     return dict    
 
-def createSortedList(list):
-    sortedMostPopular = sorted(mostPopular_dict.items(), key=operator.itemgetter(1), reverse=True)
+def createSortedList(list, sortIndex):
+    sortedMostPopular = sorted(list.items(), key=operator.itemgetter(sortIndex), reverse=True)
     return sortedMostPopular
 
 def createJson(dict):
@@ -48,8 +48,9 @@ all_titels_simplelist = requestJson(program_url_simple)
 all_titels = requestJson(program_url)
 simple_dict = createMostPopularSimple(all_titels_simplelist)
 advanced_dict = createMostPopularAdvanced(simple_dict, all_titels)
-createFile(createJson(advanced_dict))
+sorted_list = createSortedList(advanced_dict, 1)
+createFile(createJson(sorted_list))
 
 
-print(advanced_dict)
+print(sorted_list)
 
