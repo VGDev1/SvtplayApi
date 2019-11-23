@@ -20,7 +20,7 @@ def requestJson(url):
 def createMostPopular(dictFile, nbrOfTitles):
     mostPopular_dict = {}
     for i in dictFile:
-        mostPopular_dict[i['title']] = i['popularity']
+        mostPopular_dict[i['title']] = i['popularity'] , i['thumbnail']
     sortedMostPopular = sorted(mostPopular_dict.items(), key=operator.itemgetter(1), reverse=True)
     return sortedMostPopular
 
@@ -39,5 +39,3 @@ popularTitles = createMostPopular(all_titels, 50)
 jsonfile = createJson(popularTitles)
 createFile(jsonfile)
 
-
-print(popularTitles)
