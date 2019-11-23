@@ -5,10 +5,10 @@ import re
 import codecs
 import collections
 import operator
+from itertools import islice
 
 program_url = 'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=ProgramsListing&variables=%7B%22legacyIds%22%3A%5B24186554%5D%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%221eeb0fb08078393c17658c1a22e7eea3fbaa34bd2667cec91bbc4db8d778580f%22%7D%7D'
 program_url_simple = 'https://www.svtplay.se/api/search_autocomplete_list'
-
 
 def requestJson(url):
     response = requests.get(url)
@@ -29,20 +29,20 @@ def createMostPopularAdvanced(Simple, Advanced):
     dict = {}
     for i in Advanced['data']['programAtillO']['flat']:
         dict[i['name']] = Simple.get(i['name'])[0], Simple.get(i['name'])[1], i['id']
-    return dict    
+    return dict
 
 def createSortedList(list, sortIndex):
     sortedMostPopular = sorted(list.items(), key=operator.itemgetter(sortIndex), reverse=True)
-    return sortedMostPopular
+    return  collections.OrderedDict(sortedMostPopular)
 
 def createJson(dict):
     result = json.dumps(dict, ensure_ascii=False)
     return result
 
 def createFile(json):
-    file1  = codecs.open('myJson.json', "w+", "utf-8")
+    file1  = open('myJson.json', "w+")
     file1.write(json)
-      
+
 
 all_titels_simplelist = requestJson(program_url_simple)
 all_titels = requestJson(program_url)
@@ -51,6 +51,6 @@ advanced_dict = createMostPopularAdvanced(simple_dict, all_titels)
 sorted_list = createSortedList(advanced_dict, 1)
 createFile(createJson(sorted_list))
 
-
 print(sorted_list)
+
 
