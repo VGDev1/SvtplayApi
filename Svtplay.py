@@ -40,7 +40,7 @@ def createJson(dict):
     return result
 
 def createFile(json):
-    file1  = open('myJson.json', "w+")
+    file1  = codecs.open('myJson.json', "w+", "utf-8")
     file1.write(json)
 
 
