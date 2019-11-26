@@ -33,7 +33,7 @@ def createMostPopularAdvanced(Simple, Advanced):
 
 def createSortedList(list, sortIndex):
     sortedMostPopular = sorted(list.items(), key=operator.itemgetter(sortIndex), reverse=True)
-    return  collections.OrderedDict(sortedMostPopular)
+    return  sortedMostPopular
 
 def createJson(dict):
     result = json.dumps(dict, ensure_ascii=False)
