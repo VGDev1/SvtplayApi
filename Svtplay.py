@@ -51,6 +51,6 @@ advanced_dict = createMostPopularAdvanced(simple_dict, all_titels)
 sorted_list = createSortedList(advanced_dict, 1)
 createFile(createJson(sorted_list))
 
-print(sorted_list)
+#print(sorted_list)
 
 

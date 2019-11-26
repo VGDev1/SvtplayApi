@@ -1,15 +1,14 @@
 function checkTime(i) {
+  // eslint-disable-next-line no-param-reassign
   if (i < 10) i = `0${i}`; // add zero in front of numbers < 10
   return i;
 }
 
 function clock() {
-  console.log('hello');
   const today = new Date();
   let hr = today.getHours();
   let min = today.getMinutes();
   let sec = today.getSeconds();
-  // Add a zero in front of numbers<10
   hr = checkTime(hr);
   min = checkTime(min);
   sec = checkTime(sec);

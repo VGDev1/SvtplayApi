@@ -6,23 +6,36 @@ html,body {
 }
 
 body {
-    background-color: black;
+    background-color:rgb(20,20,20);
     color: white;
     font-family: helvetica,arial,sans-serif;
 }
 
-#svt {
-    background-image: url("svt.jpg");
+.main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    margin-top: 5rem !important;
 }
 
+.background {
+    width: 100%;
+    height: 100%;
+    z-index: -99;
+}
 
 #videor {
     width: 80%;
     margin: 2rem auto;
 }
 
+#clock {
+    font-size: 2.5rem;
+}
+
 .title { 
-    margin-left: 7rem;
+    margin-left: 10%;
     margin-top: 5rem;
     color: white
 }
@@ -46,21 +59,22 @@ img {
     flex-wrap: wrap;
 }
 
-.navigation {
+.center {
     margin: 0 auto;
-    width: 70%;
-    height: 100%;
-    justify-content: center;
     align-items: center;
+}
+
+.navigation {
+    width: 70%;
+    height: 15%;
+    margin-top: 3rem;
 }
 
 .choice {
     display: flex;
-    justify-content: center;
-    align-items: center;
     font-size: 2rem;
-    width: 30%;
-    height: 20%;
+    width: 30%; /* 1470px, 990px utan */
+    height: 100%;
     margin-right: 2rem;
     border: 1px solid grey;
     transition: all 0.2s ease-in-out;
@@ -70,6 +84,7 @@ img {
 .choice a {
     color: inherit;
     text-decoration: none;
+    margin: 0 auto;
 }
 
 .choice:hover {
