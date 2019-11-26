@@ -7,7 +7,7 @@ async function gJson() {
 }
 
 function getThumbnail(url) {
-  return url.replace(/140/, /400/);
+  return url.replace(/140/, /500/);
 }
 
 function createDiv(parent, video) {
