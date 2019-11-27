@@ -1,0 +1,33 @@
+{
+  "name": "svtplayapi",
+  "version": "1.0.0",
+  "description": "An api for communicating with Svtplay ",
+  "main": "app.js",
+  "dependencies": {
+    "cors-anywhere": "^0.4.1",
+    "eslint": "^6.7.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^0.20.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VDevAG/SvtplayApi.git"
+  },
+  "keywords": [
+    "svt",
+    "api",
+    "player"
+  ],
+  "author": "Victor & Pontus",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VDevAG/SvtplayApi/issues"
+  },
+  "homepage": "https://github.com/VDevAG/SvtplayApi#readme"
+}

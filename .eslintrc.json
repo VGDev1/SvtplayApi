@@ -2,7 +2,8 @@
     "env": {
         "browser": true,
         "es6": true,
-        "jquery": false
+        "jquery": false,
+        "node": true
     },
     "extends": [
         "airbnb-base"
@@ -14,9 +15,10 @@
     },
     "parserOptions": {
         "ecmaVersion": 2018,
-        "sourceType": "module"
+        "sourceType": "script"
     },
     "rules": {
-        "no-console" : 0
+        "no-console" : 0,       
+        "indent": ["error", 4]
     }
 }

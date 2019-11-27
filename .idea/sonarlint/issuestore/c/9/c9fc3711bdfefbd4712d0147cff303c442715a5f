@@ -1,7 +1,0 @@
-
-kpython:S117"TRename this parameter "Advanced" to match the regular expression ^[_a-z][a-z0-9_]*$.(ó¸ÜĞ
-kpython:S117"TRename this parameter "dictFile" to match the regular expression ^[_a-z][a-z0-9_]*$.(¨•€
-ipython:S117"RRename this parameter "Simple" to match the regular expression ^[_a-z][a-z0-9_]*$.(ó¸ÜĞ
-wpython:S117"aRename this local variable "mostPopular_dict" to match the regular expression ^[_a-z][a-z0-9_]*$.(™ÿª|
-qpython:S117""URename this parameter "sortIndex" to match the regular expression ^[_a-z][a-z0-9_]*$.(ß¥ÒÜøÿÿÿÿ
-~python:S117#"bRename this local variable "sortedMostPopular" to match the regular expression ^[_a-z][a-z0-9_]*$.(Îšˆ…ûÿÿÿÿ

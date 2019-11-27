@@ -1,4 +1,3 @@
-
 const program_url =
   "https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=ProgramsListing&variables=%7B%22legacyIds%22%3A%5B24186554%5D%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%221eeb0fb08078393c17658c1a22e7eea3fbaa34bd2667cec91bbc4db8d778580f%22%7D%7D";
 const program_url_simple =
@@ -12,22 +11,40 @@ async function getURL(apiurl) {
   }
 
 function createSimpleJson(json) {
-  let data = { program: [] };
-  for (let i = 0; i < json.length; i++) {
-    data.program.push(
-      json[i].title,
-      json[i].popularity,
-      json[i].thumbnail
-    ); 
-  }
+    let data = { program: [] };
+    for (let i = 0; i < json.length; i++) {
+        data.program.push(
+            [json[i].title,
+            json[i].popularity,
+            json[i].thumbnail]
+            ); 
+    }
   return data;
   }
 
 
+function createAdvancedJson(json_simple, json_advanced) {
+    let data = { program: [] }
+    for (let i = 0; i < json_advanced.data.programAtillO.flat.length; i++) {
+        data.program.push(
+            [json_simple.program[i][0],
+            json_simple.program[i][1],
+            json_advanced.data.programAtillO.flat[i].i]
+        );
+    }
+}
+
+function createSortedJson(json, sortIndex)
+    let sortable = []
+    for (var popularity in json) {
+        
+    }
+
+
+
 function createMostPopularAdvanced(Simple, Advanced) {
-  return null;
+    return null;
 }
 
 const json = getURL(program_url_simple).then(d => createSimpleJson(d));
 console.log(json);
-
