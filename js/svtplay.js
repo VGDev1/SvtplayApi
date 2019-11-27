@@ -18,16 +18,16 @@ function createSimpleJson(json) {
       json[i].title,
       json[i].popularity,
       json[i].thumbnail
-    );
+    ); 
+  }
   return data;
   }
-}
+
 
 function createMostPopularAdvanced(Simple, Advanced) {
   return null;
 }
 
-const json = getURL(program_url_simple);
-const simple_json = createSimpleJson(json);
+const json = getURL(program_url_simple).then(d => createSimpleJson(d));
 console.log(json);
 
