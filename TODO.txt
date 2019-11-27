@@ -1,0 +1,4 @@
+1. Testa player
+2. Göra OneNote med git cmds
+3. m3u8 backend
+4. Lägga in lite kommentarer
