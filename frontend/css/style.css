@@ -41,7 +41,7 @@ body {
 
 .media {
     flex-direction: column;
-    width: calc(25% - 3rem);
+    width: calc(25% - 5rem);
     margin-right: 5rem;
 }
 

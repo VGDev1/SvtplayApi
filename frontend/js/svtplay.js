@@ -47,11 +47,12 @@ async function anon() {
     const jsonSimple = getURL(programUrlSimple).then((d) => createSimpleJson(d));
     const jsonAdvanced = getURL(programUrl);
     const promises = Promise.all([jsonSimple, jsonAdvanced]);
-    promises.then((p) => createAdvancedJson(p[0], p[1]))
+    promises
+        .then((p) => createAdvancedJson(p[0], p[1]))
         .then((d) => createSortedJson(d))
         .then((r) => console.log(r))
         .catch((e) => console.error(e));
 }
 
 anon();
-getM3u8Link('eEd5x48').then(d => console.log(d));
+getM3u8Link('eEd5x48').then((d) => console.log(d));

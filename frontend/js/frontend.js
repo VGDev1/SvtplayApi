@@ -1,7 +1,7 @@
 const videoElements = document.querySelector('.flex-container');
 
-async function gJson() {
-    const r = await fetch('./myJson.json');
+async function getLocalJson() {
+    const r = await fetch('/backend/python/myJson.json');
     const d = await r.json();
     return d;
 }
@@ -35,4 +35,4 @@ function drawPopular(video) {
     }
 }
 
-gJson().then((json) => drawPopular(json));
+getLocalJson().then((json) => drawPopular(json));

@@ -31,14 +31,7 @@ function clock() {
     setTimeout(() => { clock(); }, 500);
 }
 
-async function getURL(apiurl) {
-    const data = await fetch(`http://127.0.0.1:8080/${apiurl}`, { headers: { 'x-requested-with': 'api' } });
-    const resp = await data.json();
-    return resp;
-}
-
 $('document').ready(() => {
     if (window.location.pathname === '/start.html') clock();
     console.log(window.location.pathname);
-    // getURL().then((d) => console.log(d));
 });
