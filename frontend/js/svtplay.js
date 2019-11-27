@@ -36,7 +36,7 @@ function createSortedJson(json, sortIndex) {
     return sorted;
 }
 
-const jsonAdvanced = getURL(programUrl).then((d) => createAdvancedJson(d));
+const jsonAdvanced = getURL(programUrl);
 const jsonSimple = getURL(programUrlSimple).then((d) => createSimpleJson(d));
 const jsonList = createAdvancedJson(jsonSimple, jsonAdvanced);
 const jsonListSorted = createSortedJson(jsonList, 3);
