@@ -26,18 +26,23 @@ function createAdvancedJson(JsonSimple, JsonAdvanced) {
         data.program.push(
             [JsonSimple.program[i][0],
                 JsonSimple.program[i][1],
-                JsonAdvanced.data.programAtillO.flat[i].i],
+                JsonAdvanced.data.programAtillO.flat[i].id],
         );
     }
+    return data;
 }
 
-function createSortedJson(json, sortIndex) {
-    const sorted = json.program.sort(json.program[sortIndex]);
+function createSortedJson(json) {
+    const sorted = json.program.sort((a, b) => parseFloat(b[1]) - parseFloat(a[1]));
     return sorted;
 }
+async function anon() {
+    const jsonSimple = await getURL(programUrlSimple).then((d) => createSimpleJson(d));
+    const jsonAdvanced = await getURL(programUrl);
+    const jsonList = await createAdvancedJson(jsonSimple, jsonAdvanced);
+    console.log(jsonList);
+    const jsonListSorted = createSortedJson(jsonList);
+    console.log(jsonListSorted);
+}
 
-const jsonAdvanced = getURL(programUrl);
-const jsonSimple = getURL(programUrlSimple).then((d) => createSimpleJson(d));
-const jsonList = createAdvancedJson(jsonSimple, jsonAdvanced);
-const jsonListSorted = createSortedJson(jsonList, 3);
-console.log(jsonListSorted);
+anon();
