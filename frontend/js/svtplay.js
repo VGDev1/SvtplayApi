@@ -64,3 +64,4 @@ async function getAllPrograms() {
 
 getAllPrograms();
 getSvtVideoId('2213942344').then((d) => console.log(d));
+getM3u8Link("eEd5x48").then(d => console.log(d));

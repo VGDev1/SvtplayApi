@@ -14,10 +14,7 @@
     "fetch": "^1.1.0",
     "http-errors": "~1.6.3",
     "morgan": "^1.9.1",
-<<<<<<< Updated upstream
-=======
     "node": "^13.1.0",
->>>>>>> Stashed changes
     "node-fetch": "^2.6.0",
     "pug": "^2.0.4"
   }

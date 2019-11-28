@@ -1,15 +1,38 @@
 const express = require('express');
-const fetch = require('fetch');
 
 const router = express.Router();
+const svtapi = require('../../controllers/svtplay');
+
+const getAllPrograms = () => {
+    const p1 = svtapi.getURLProxy(svtapi.programUrlSimple)
+        .then((r) => svtapi.createSimpleJson(r));
+    const p2 = svtapi.getURL(svtapi.programUrl);
+    const pr = Promise.all([p1, p2]);
+    return pr
+        .then((p) => svtapi.createAdvancedJson(p[0], p[1]))
+        .then((d) => svtapi.createSortedJson(d))
+        .catch((e) => console.error(e));
+};
 
 router.get('/', (req, res) => {
     res.render('index');
 });
 
+router.get('/program/:id', (req, res, next) => {
+    if (req.params.id === 'AO') {
+        getAllPrograms().then((d) => res.json(d));
+    } else if (req.params.id === 'popular') {
+        getAllPrograms()
+            .then((d) => d.slice(0, 50))
+            .then((r) => res.json(r));
+    }
+});
+
 /* GET users listing. */
-router.get('/m3u8', (req, res, next) => {
-    res.json({ error: { message: 'nothing here yet', yeetLevel: 'yeeeeeet.' } });
+router.get('/m3u8/:id', (req, res, next) => {
+    svtapi.getM3u8Link(req.params.id)
+        .then((link) => res.json({ message: link }))
+        .catch((e) => console.log(e));
 });
 
 module.exports = router;

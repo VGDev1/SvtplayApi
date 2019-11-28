@@ -12,6 +12,12 @@ const getURLProxy = async (apiurl) => {
     return resp;
 };
 
+const getURL = async (apiurl) => {
+    const data = await fetch(`${apiurl}`);
+    const resp = await data.json();
+    return resp;
+};
+
 const createSimpleJson = (json) => {
     const data = { program: [] };
     for (let i = 0; i < json.length; i++) {
@@ -53,9 +59,17 @@ const getM3u8Link = async (svtVideoId) => {
     return m3u8;
 };
 
+// methods exports
 exports.getURLProxy = getURLProxy;
+exports.getURL = getURL;
 exports.createSimpleJson = createSimpleJson;
 exports.createAdvancedJson = createAdvancedJson;
 exports.createSortedJson = createSortedJson;
 exports.getSvtVideoId = getSvtVideoId;
 exports.getM3u8Link = getM3u8Link;
+// variable exports
+exports.programUrl = programUrl;
+exports.programUrlSimple = programUrlSimple;
+exports.programApiUrl = programApiUrl;
+exports.specificProgramUrl1 = specificProgramUrl1;
+exports.specificProgramUrl2 = specificProgramUrl2;
