@@ -7,8 +7,8 @@ const router = express.Router();
 router.get('/', (req, res) => {
     const { url } = req.query;
     console.log(url);
-    const resp = svtapi.getURL(url)
-        .then((r) => res.json({ message: r }))
+    svtapi.getURLProxy(url)
+        .then((resp) => res.json({ message: resp }))
         .catch((e) => console.log(e));
 });
 
