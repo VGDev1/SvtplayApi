@@ -1,6 +1,8 @@
 const programUrl = 'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=ProgramsListing&variables=%7B%22legacyIds%22%3A%5B24186554%5D%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%221eeb0fb08078393c17658c1a22e7eea3fbaa34bd2667cec91bbc4db8d778580f%22%7D%7D';
 const programUrlSimple = 'https://www.svtplay.se/api/search_autocomplete_list';
 const programApiUrl = 'https://api.svt.se/video/';
+const specificProgramUrl1 = 'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=VideoPage&variables=%7B%22legacyIds%22%3A%';
+const specificProgramUrl2 = '%22%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22ae75c500d4f6f8743f6673f8ade2f8af89fb019d4b23f464ad84658734838c78%22%7D%7D';
 
 async function getURL(apiurl) {
     const data = await fetch(`http://127.0.0.1:8080/${apiurl}`, { headers: { 'x-requested-with': 'api' } });
@@ -43,6 +45,12 @@ async function getM3u8Link(svtVideoId) {
     return m3u8;
 }
 
+async function getSvtVideoId(videoid) {
+    const json = await getURL(specificProgramUrl1 + videoid + specificProgramUrl2);
+    const svtVideoId = json.data.listablesByEscenicId[0].videoSvtId;
+    return svtVideoId;
+}
+
 async function anon() {
     const jsonSimple = getURL(programUrlSimple).then((d) => createSimpleJson(d));
     const jsonAdvanced = getURL(programUrl);
@@ -55,4 +63,4 @@ async function anon() {
 }
 
 anon();
-getM3u8Link('eEd5x48').then((d) => console.log(d));
+getSvtVideoId('2213942344').then((d) => console.log(d));
