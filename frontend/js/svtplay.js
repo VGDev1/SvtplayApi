@@ -51,7 +51,7 @@ async function getSvtVideoId(videoid) {
     return svtVideoId;
 }
 
-async function anon() {
+async function getAllPrograms() {
     const jsonSimple = getURL(programUrlSimple).then((d) => createSimpleJson(d));
     const jsonAdvanced = getURL(programUrl);
     const promises = Promise.all([jsonSimple, jsonAdvanced]);
@@ -62,5 +62,5 @@ async function anon() {
         .catch((e) => console.error(e));
 }
 
-anon();
+getAllPrograms();
 getSvtVideoId('2213942344').then((d) => console.log(d));
