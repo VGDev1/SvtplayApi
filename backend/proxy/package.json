@@ -15,7 +15,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "npm run dev",
-    "run": "nodemon ./bin/www"
+    "run": "nodemon cors.js"
   },
   "repository": {
     "type": "git",

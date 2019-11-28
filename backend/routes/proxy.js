@@ -3,8 +3,8 @@ const fetch = require('fetch');
 
 const router = express.Router();
 
-router.get('/:url', (req, res) => {
-    const { url } = req.params;
+router.get('/', (req, res) => {
+    const { url } = req.query;
     console.log(url);
     // fetch(`localhost:8080/${url}`);
     res.json({ message: url });

@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "proxy": "nodemon ./proxy/cors.js",
+    "api": "nodemon ./bin/www",
+    "start": "npm run proxy & npm run api"
   },
   "dependencies": {
     "cookie-parser": "^1.4.4",

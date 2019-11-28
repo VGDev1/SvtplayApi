@@ -20,6 +20,7 @@
     "rules": {
         "no-console" : 0,       
         "indent": ["error", 4],
-        "no-plusplus": 0
+        "no-plusplus": 0,
+        "no-unused-vars": 0
     }
 }
