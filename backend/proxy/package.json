@@ -5,16 +5,12 @@
   "main": "app.js",
   "dependencies": {
     "cors-anywhere": "^0.4.1",
-    "eslint": "^6.7.1",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
     "express": "^4.17.1",
     "http-proxy-middleware": "^0.20.0",
     "nodemon": "^2.0.1"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "npm run dev",
     "run": "nodemon cors.js"
   },
   "repository": {

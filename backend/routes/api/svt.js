@@ -27,7 +27,7 @@ router.get('/getVideoId/:id', (req, res, next) => {
 router.get('/program/:id', (req, res, next) => {
     if (req.params.id === 'AO') {
         getAllPrograms().then((d) => res.json(d));
-    } else if (req.params.id === 'popular') {
+    } else if (req.params.id === 'populart') {
         getAllPrograms()
             .then((d) => d.slice(0, 50))
             .then((r) => res.json(r));

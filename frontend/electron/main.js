@@ -12,13 +12,13 @@ app.on('ready', () => {
     // New Window
     mainWindow = new BrowserWindow({
         autoHideMenuBar: true,
-        resizable: false,
-        frame: false,
+        resizable: true,
+        frame: true,
         fullscreen: true,
     });
     // Load HTML
     mainWindow.loadURL(url.format({
-        pathname: path.join(__dirname, '../start.html'),
+        pathname: path.join(__dirname, 'mainWindow.html'),
         protocol: 'file:',
         slashes: true,
     }));
