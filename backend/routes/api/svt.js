@@ -15,12 +15,12 @@ const getAllPrograms = () => {
 };
 
 router.get('/', (req, res) => {
-    res.render('index');
+    res.status(404).json({ message: 'forbidden' });
 });
 
 router.get('/getVideoId/:id', (req, res, next) => {
     svtapi.getSvtVideoId(req.params.id)
-        .then((r) => res.json({ message: r }))
+        .then((r) => res.json({ svtVideoId: r }))
         .catch((e) => console.log(e));
 });
 
@@ -37,7 +37,7 @@ router.get('/program/:id', (req, res, next) => {
 /* GET users listing. */
 router.get('/m3u8/:id', (req, res, next) => {
     svtapi.getM3u8Link(req.params.id)
-        .then((link) => res.json({ message: link }))
+        .then((link) => res.json({ m3u8: link }))
         .catch((e) => console.log(e));
 });
 

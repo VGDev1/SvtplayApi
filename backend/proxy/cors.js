@@ -10,5 +10,5 @@ corsProxy.createServer({
     requireHeader: ['origin', 'x-requested-with'],
     removeHeaders: ['cookie', 'cookie2'],
 }).listen(port, host, () => {
-    console.log(`Running on: ${host}:${port}`);
+    console.log(`Cors-Proxy running on: ${host}:${port}`);
 });
