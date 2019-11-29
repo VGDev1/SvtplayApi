@@ -18,6 +18,12 @@ router.get('/', (req, res) => {
     res.render('index');
 });
 
+router.get('/getVideoId/:id', (req, res, next) => {
+    svtapi.getSvtVideoId(req.params.id)
+        .then((r) => res.json({ message: r }))
+        .catch((e) => console.log(e));
+});
+
 router.get('/program/:id', (req, res, next) => {
     if (req.params.id === 'AO') {
         getAllPrograms().then((d) => res.json(d));
