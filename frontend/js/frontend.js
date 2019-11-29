@@ -35,4 +35,11 @@ function drawPopular(video) {
     }
 }
 
-getLocalJson().then((json) => drawPopular(json));
+window.addEventListener('keydown', (e) => {
+    const evtobj = window.event ? event : e;
+    console.log(evtobj.ctrlKey);
+    if (evtobj.ctrlKey && evtobj.keyCode == 39) window.history.back();
+});
+
+
+// getLocalJson().then((json) => drawPopular(json));

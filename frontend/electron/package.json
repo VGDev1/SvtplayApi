@@ -9,6 +9,7 @@
   "author": "Pontus",
   "license": "MIT",
   "dependencies": {
-    "electron": "^7.1.2"
+    "electron": "^7.1.2",
+    "mousetrap": "^1.6.3"
   }
 }

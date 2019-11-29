@@ -31,6 +31,12 @@ function clock() {
     setTimeout(() => { clock(); }, 500);
 }
 
+window.addEventListener('keydown', (e) => {
+    const evtobj = window.event ? event : e;
+    console.log(evtobj.ctrlKey);
+    if (evtobj.ctrlKey && evtobj.keyCode == 39) window.history.back();
+});
+
 $('document').ready(() => {
     if (window.location.pathname === '/start.html') clock();
     console.log(window.location.pathname);
