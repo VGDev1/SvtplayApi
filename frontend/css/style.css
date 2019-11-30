@@ -44,15 +44,33 @@ body {
     flex-direction: column;
     width: calc(25% - 5rem);
     margin-right: 5rem;
+    margin-bottom: 3rem;
+}
+
+.media:hover, .media > a:focus {
+    transform:scale(1.35);
+}
+
+.media > a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
 }
 
 .videoname {
     margin-top: 1rem;
     font-family: helvetica,arial,sans-serif;
-    font-size: 1.5rem;
+    font-size: 2.2rem;
 }
 img {
     width: 100%;
+}
+
+p.svtId {
+    display: none;
+    visibility: hidden;
 }
 
 .flex-container {
