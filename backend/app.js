@@ -10,6 +10,7 @@ const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const usersRouter = require('./routes/users');
 const proxyRouter = require('./routes/proxy');
+const svtapi = require('./controllers/svtplay');
 
 const app = express();
 
@@ -45,5 +46,23 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.render('error');
 });
+
+// autofetch on start to cache immediately
+((req, res, next) => {
+    (svtapi.getAllPrograms = async () => {
+        console.time('AUTOFETCH SELF INVOKED');
+        const p1 = svtapi.getURLProxy(svtapi.programUrlSimple, 'simple').then((r) => svtapi.createSimpleJson(r));
+        const p2 = svtapi.getURL(svtapi.programUrl, 'programUrl');
+        const pr = Promise.all([p1, p2]);
+        try {
+            const p = await pr;
+            const d = svtapi.createAdvancedJson(p[0], p[1]);
+            console.timeEnd('AUTOFETCH SELF INVOKED');
+            return svtapi.createSortedJson(d);
+        } catch (e) {
+            return console.error(e);
+        }
+    })();
+})();
 
 module.exports = app;

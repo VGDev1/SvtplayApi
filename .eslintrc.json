@@ -5,9 +5,7 @@
         "jquery": true,
         "node": true
     },
-    "extends": [
-        "airbnb-base"
-    ],
+    "extends": ["airbnb-base"],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
@@ -18,10 +16,12 @@
         "sourceType": "script"
     },
     "rules": {
-        "no-console" : 0,       
+        "no-console": 0,
         "indent": ["error", 4],
         "no-plusplus": 0,
         "no-unused-vars": 0,
-        "eqeqeq": 0
+        "eqeqeq": 0,
+        "implicit-arrow-linebreak": 0,
+        "function-paren-newline": 0
     }
 }

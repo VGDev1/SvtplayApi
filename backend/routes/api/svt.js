@@ -3,15 +3,17 @@ const express = require('express');
 const router = express.Router();
 const svtapi = require('../../controllers/svtplay');
 
-const getAllPrograms = () => {
-    const p1 = svtapi.getURLProxy(svtapi.programUrlSimple, 'simple')
-        .then((r) => svtapi.createSimpleJson(r));
+const getAllPrograms = async () => {
+    const p1 = svtapi.getURLProxy(svtapi.programUrlSimple, 'simple').then((r) => svtapi.createSimpleJson(r));
     const p2 = svtapi.getURL(svtapi.programUrl, 'programUrl');
     const pr = Promise.all([p1, p2]);
-    return (pr
-        .then((p) => svtapi.createAdvancedJson(p[0], p[1]))
-        .then((d) => svtapi.createSortedJson(d))
-        .catch((e) => console.error(e)));
+    try {
+        const p = await pr;
+        const d = svtapi.createAdvancedJson(p[0], p[1]);
+        return svtapi.createSortedJson(d);
+    } catch (e) {
+        return console.error(e);
+    }
 };
 
 router.get('/', (req, res) => {
@@ -19,7 +21,8 @@ router.get('/', (req, res) => {
 });
 
 router.get('/getVideoId/:id', (req, res, next) => {
-    svtapi.getSvtVideoId(req.params.id)
+    svtapi
+        .getSvtVideoId(req.params.id)
         .then((r) => res.json({ svtVideoId: r }))
         .catch((e) => console.log(e));
 });
@@ -36,7 +39,8 @@ router.get('/program/:id', (req, res, next) => {
 
 /* GET users listing. */
 router.get('/m3u8/:id', (req, res, next) => {
-    svtapi.getM3u8Link(req.params.id)
+    svtapi
+        .getM3u8Link(req.params.id)
         .then((link) => res.json({ m3u8: link }))
         .catch((e) => console.log(e));
 });

@@ -9,7 +9,7 @@ const specificProgramUrl2 = '"}&extensions={"persistedQuery":{"version":1,"sha25
 const getURLProxy = async (apiurl, lable) => {
     // lable is only for time debug purposes;
     console.time(`fetch${lable}`);
-    const data = await fetch(`http://127.0.0.1:8080/${apiurl}`, { headers: { 'x-requested-with': 'api' } });
+    const data = await fetch(`http://127.0.0.1:8080/${apiurl}`, { headers: { 'x-requested-with': 'api' }, cache: 'no-store' });
     console.timeEnd(`fetch${lable}`);
     console.time(`json${lable}`);
     const resp = await data.json();
@@ -19,9 +19,11 @@ const getURLProxy = async (apiurl, lable) => {
 
 const getURL = async (apiurl) => {
     console.time('programUrl');
-    const data = await fetch(`${apiurl}`);
-    const resp = await data.json();
+    const data = await fetch(`${apiurl}`, { cache: 'no-store' });
     console.timeEnd('programUrl');
+    console.time('json');
+    const resp = await data.json();
+    console.timeEnd('json');
     return resp;
 };
 

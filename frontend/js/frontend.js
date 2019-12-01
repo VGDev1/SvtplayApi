@@ -1,19 +1,25 @@
 const videoElements = document.querySelector('.flex-container');
 
 async function getPrograms(section) {
-    const data = await fetch(`http://localhost:3000/api/svt/program/${section}`);
+    const data = await fetch(`http://localhost:3000/api/svt/program/${section}`, {
+        cache: 'no-store',
+    });
     const resp = await data.json();
     return resp;
 }
 
 async function getVideoId(id) {
-    const data = await fetch(`http://localhost:3000/api/svt/getVideoId/${id}`);
+    const data = await fetch(`http://localhost:3000/api/svt/getVideoId/${id}`, {
+        cache: 'no-store',
+    });
     const resp = await data.json();
     return resp;
 }
 
 async function getm3u8Link(id) {
-    const data = await fetch(`http://localhost:3000/api/svt/m3u8/${id}`);
+    const data = await fetch(`http://localhost:3000/api/svt/m3u8/${id}`, {
+        cache: 'no-store',
+    });
     const resp = await data.json();
     return resp;
 }
@@ -60,16 +66,17 @@ window.addEventListener('keydown', (e) => {
     if (evtobj.ctrlKey && evtobj.keyCode == 39) window.history.back();
 });
 
-
 getPrograms('populart')
     .then((json) => drawPopular(json))
     .then(() => {
         const playVideo = document.querySelectorAll('div.media > a');
         console.log(playVideo);
-        playVideo.forEach((e) => e.addEventListener('click', () => {
-            getVideoId(e.lastChild.textContent)
-                .then((r) => getm3u8Link(r.svtVideoId))
-                .then((r) => window.location.assign(`./electron/videoplayer.html?url=${r.m3u8}`))
-                .catch((err) => console.error(err));
-        }));
+        playVideo.forEach((e) =>
+            e.addEventListener('click', () => {
+                getVideoId(e.lastChild.textContent)
+                    .then((r) => getm3u8Link(r.svtVideoId))
+                    .then((r) => window.location.assign(`./electron/videoplayer.html?url=${r.m3u8}`))
+                    .catch((err) => console.error(err));
+            }),
+        );
     });
