@@ -6,19 +6,27 @@ const programApiUrl = 'https://api.svt.se/video/';
 const specificProgramUrl1 = 'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=VideoPage&variables={"legacyIds":"';
 const specificProgramUrl2 = '"}&extensions={"persistedQuery":{"version":1,"sha256Hash":"ae75c500d4f6f8743f6673f8ade2f8af89fb019d4b23f464ad84658734838c78"}}';
 
-const getURLProxy = async (apiurl) => {
+const getURLProxy = async (apiurl, lable) => {
+    // lable is only for time debug purposes;
+    console.time(`fetch${lable}`);
     const data = await fetch(`http://127.0.0.1:8080/${apiurl}`, { headers: { 'x-requested-with': 'api' } });
+    console.timeEnd(`fetch${lable}`);
+    console.time(`json${lable}`);
     const resp = await data.json();
+    console.timeEnd(`json${lable}`);
     return resp;
 };
 
 const getURL = async (apiurl) => {
+    console.time('programUrl');
     const data = await fetch(`${apiurl}`);
     const resp = await data.json();
+    console.timeEnd('programUrl');
     return resp;
 };
 
 const createSimpleJson = (json) => {
+    console.time('simple');
     const data = { program: [] };
     for (let i = 0; i < json.length; i++) {
         data.program.push(
@@ -27,10 +35,12 @@ const createSimpleJson = (json) => {
                 json[i].thumbnail],
         );
     }
+    console.timeEnd('simple');
     return data;
 };
 
 const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
+    console.time('advanced');
     const data = { program: [] };
     for (let i = 0; i < JsonAdvanced.data.programAtillO.flat.length; i++) {
         data.program.push(
@@ -40,11 +50,14 @@ const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
                 JsonSimple.program[i][1]],
         );
     }
+    console.timeEnd('advanced');
     return data;
 };
 
 const createSortedJson = (json) => {
+    console.time('sorted');
     const sorted = json.program.sort((a, b) => parseFloat(b[3]) - parseFloat(a[3]));
+    console.timeEnd('sorted');
     return sorted;
 };
 

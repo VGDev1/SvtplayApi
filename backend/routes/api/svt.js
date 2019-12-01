@@ -4,14 +4,14 @@ const router = express.Router();
 const svtapi = require('../../controllers/svtplay');
 
 const getAllPrograms = () => {
-    const p1 = svtapi.getURLProxy(svtapi.programUrlSimple)
+    const p1 = svtapi.getURLProxy(svtapi.programUrlSimple, 'simple')
         .then((r) => svtapi.createSimpleJson(r));
-    const p2 = svtapi.getURL(svtapi.programUrl);
+    const p2 = svtapi.getURL(svtapi.programUrl, 'programUrl');
     const pr = Promise.all([p1, p2]);
-    return pr
+    return (pr
         .then((p) => svtapi.createAdvancedJson(p[0], p[1]))
         .then((d) => svtapi.createSortedJson(d))
-        .catch((e) => console.error(e));
+        .catch((e) => console.error(e)));
 };
 
 router.get('/', (req, res) => {
