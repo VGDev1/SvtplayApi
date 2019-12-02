@@ -5,7 +5,7 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const morgan = require('morgan');
-const redis = require('./controllers/redis');
+const fetch = require('node-fetch');
 const logger = require('./config/logger');
 require('dotenv').config('./config/.env');
 
@@ -14,7 +14,6 @@ const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const usersRouter = require('./routes/users');
 const proxyRouter = require('./routes/proxy');
-const svtapi = require('./controllers/svtplay');
 
 const app = express();
 
@@ -23,7 +22,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Modules for app to use
-const accessLogStream = fs.createWriteStream(path.join(`${__dirname}/logs/app_info.log`), { flags: 'a' });
+const accessLogStream = fs.createWriteStream('./backend/logs/app_info.log', { flags: 'a' });
 app.use(morgan('tiny', { stream: accessLogStream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -54,21 +53,9 @@ app.use((err, req, res, next) => {
 
 // autofetch on start to cache immediately
 ((req, res, next) => {
-    (svtapi.getAllPrograms = async () => {
-        console.time('AUTOFETCH SELF INVOKED');
-        logger.info('server started');
-        const p1 = svtapi.getURLProxy(svtapi.programUrlSimple, 'simple').then((r) => svtapi.createSimpleJson(r));
-        const p2 = svtapi.getURL(svtapi.programUrl, 'programUrl');
-        const pr = Promise.all([p1, p2]);
-        try {
-            const p = await pr;
-            const d = svtapi.createAdvancedJson(p[0], p[1]);
-            console.timeEnd('AUTOFETCH SELF INVOKED');
-            return svtapi.createSortedJson(d);
-        } catch (e) {
-            return logger.error(e);
-        }
-    })();
+    fetch('http://localhost:3000/api/svt/program/AO');
+    fetch('http://localhost:3000/api/svt/program/populart');
+    logger.info('fetch AO self INVOKED!');
 })();
 
 module.exports = app;

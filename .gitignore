@@ -3,3 +3,4 @@
 .metals
 .eslintrc.json
 **/logs/
+**/run.sh
