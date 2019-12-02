@@ -1,38 +1,41 @@
 {
-  "name": "svtplayapi",
-  "version": "1.0.0",
-  "description": "An api for communicating with Svtplay ",
-  "main": "app.js",
-  "dependencies": {
-    "cors-anywhere": "^0.4.1",
-    "express": "^4.17.1",
-    "http-proxy-middleware": "^0.20.0",
-    "node-fetch": "^2.6.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.9.0",
-    "@typescript-eslint/parser": "^2.9.0",
-    "eslint": "^6.7.1",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-plugin-import": "^2.18.2",
-    "standard": "^14.3.1"
-  },
-  "scripts": {
-    "test": "npm run dev"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/VDevAG/SvtplayApi.git"
-  },
-  "keywords": [
-    "svt",
-    "api",
-    "player"
-  ],
-  "author": "Victor & Pontus",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/VDevAG/SvtplayApi/issues"
-  },
-  "homepage": "https://github.com/VDevAG/SvtplayApi#readme"
+    "name": "svtplayapi",
+    "version": "1.0.0",
+    "description": "An api for communicating with Svtplay ",
+    "main": "app.js",
+    "dependencies": {
+        "cors-anywhere": "^0.4.1",
+        "dotenv": "^8.2.0",
+        "electron": "^7.1.2",
+        "express": "^4.17.1",
+        "http-proxy-middleware": "^0.20.0",
+        "node-fetch": "^2.6.0",
+        "winston": "^3.2.1"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "^2.9.0",
+        "@typescript-eslint/parser": "^2.9.0",
+        "eslint": "^6.7.1",
+        "eslint-config-airbnb-base": "^14.0.0",
+        "eslint-plugin-import": "^2.18.2",
+        "standard": "^14.3.1"
+    },
+    "scripts": {
+        "start": "nodemon ./backend/bin/www & nodemon ./backend/proxy/cors.js & electron ./frontend/electron"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/VDevAG/SvtplayApi.git"
+    },
+    "keywords": [
+        "svt",
+        "api",
+        "player"
+    ],
+    "author": "Victor & Pontus",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/VDevAG/SvtplayApi/issues"
+    },
+    "homepage": "https://github.com/VDevAG/SvtplayApi#readme"
 }

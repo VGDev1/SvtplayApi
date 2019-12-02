@@ -1,0 +1,7 @@
+2019-12-02 17:28:20 info: server started
+2019-12-02 17:28:20 info: Main server Listening on port 3000
+2019-12-02 17:28:57 info: server started
+2019-12-02 17:28:57 info: Main server Listening on port 3000
+2019-12-02 17:28:57 error: request to http://127.0.0.1:8080/https://www.svtplay.se/api/search_autocomplete_list failed, reason: connect ECONNREFUSED 127.0.0.1:8080
+2019-12-02 17:29:49 info: server started
+2019-12-02 17:29:49 info: Main server Listening on port 3000

@@ -3,7 +3,11 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const fs = require('fs');
+const morgan = require('morgan');
+const redis = require('./controllers/redis');
+const logger = require('./config/logger');
+require('dotenv').config('./config/.env');
 
 // All routes.js files imported
 const indexRouter = require('./routes/index');
@@ -19,7 +23,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Modules for app to use
-app.use(logger('dev'));
+const accessLogStream = fs.createWriteStream(path.join(`${__dirname}/logs/app_info.log`), { flags: 'a' });
+app.use(morgan('tiny', { stream: accessLogStream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -51,6 +56,7 @@ app.use((err, req, res, next) => {
 ((req, res, next) => {
     (svtapi.getAllPrograms = async () => {
         console.time('AUTOFETCH SELF INVOKED');
+        logger.info('server started');
         const p1 = svtapi.getURLProxy(svtapi.programUrlSimple, 'simple').then((r) => svtapi.createSimpleJson(r));
         const p2 = svtapi.getURL(svtapi.programUrl, 'programUrl');
         const pr = Promise.all([p1, p2]);
@@ -60,7 +66,7 @@ app.use((err, req, res, next) => {
             console.timeEnd('AUTOFETCH SELF INVOKED');
             return svtapi.createSortedJson(d);
         } catch (e) {
-            return console.error(e);
+            return logger.error(e);
         }
     })();
 })();
