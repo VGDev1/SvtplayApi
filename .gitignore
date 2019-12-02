@@ -2,3 +2,4 @@
 .vscode
 .metals
 .eslintrc.json
+**/logs/
