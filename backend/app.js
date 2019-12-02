@@ -7,6 +7,7 @@ const fs = require('fs');
 const morgan = require('morgan');
 const fetch = require('node-fetch');
 const logger = require('./config/logger');
+const redis = require('./controllers/redis');
 require('dotenv').config('./config/.env');
 
 // All routes.js files imported
@@ -22,7 +23,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Modules for app to use
-const accessLogStream = fs.createWriteStream('./backend/logs/app_info.log', { flags: 'a' });
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/app_info.log'), { flags: 'a' });
 app.use(morgan('tiny', { stream: accessLogStream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -52,10 +53,16 @@ app.use((err, req, res, next) => {
 });
 
 // autofetch on start to cache immediately
-((req, res, next) => {
-    fetch('http://localhost:3000/api/svt/program/AO');
-    fetch('http://localhost:3000/api/svt/program/populart');
-    logger.info('fetch AO self INVOKED!');
+(async (req, res, next) => {
+    const nextHour = (60 - new Date().getMinutes()) * 60;
+    setTimeout(async () => {
+        // redis.flush();
+        const d1 = await fetch('http://localhost:3000/api/svt/program/AO');
+        const atillo = await d1.json();
+        redis.cache(atillo);
+        redis.getCache(atillo);
+        logger.info('fetch AO self INVOKED!');
+    }, nextHour);
 })();
 
 module.exports = app;
