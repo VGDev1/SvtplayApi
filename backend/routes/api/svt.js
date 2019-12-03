@@ -1,4 +1,5 @@
 const express = require('express');
+const cache = require('express-redis-cache')();
 
 const router = express.Router();
 const svtapi = require('../../controllers/svtplay');
@@ -27,7 +28,7 @@ router.get('/getVideoId/:id', (req, res, next) => {
         .catch((e) => console.log(e));
 });
 
-router.get('/program/:id', (req, res, next) => {
+router.get('/program/:id', cache.route(), (req, res, next) => {
     if (req.params.id === 'AO') {
         getAllPrograms().then((d) => res.json(d));
     } else if (req.params.id === 'populart') {
