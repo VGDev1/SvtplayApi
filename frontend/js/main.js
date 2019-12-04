@@ -6,7 +6,20 @@ function checkTime(i) {
 
 function date() {
     const today = new Date();
-    const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+    ];
     const days = ['Sön', 'Mån', 'Tis', 'Ons', 'Tors', 'Fre', 'Lör'];
     const curWeekDay = days[today.getDay()];
     const curDay = today.getDate();
@@ -28,7 +41,9 @@ function time() {
 
 function clock() {
     document.getElementById('clock').innerHTML = `${date() + time[0]}:${time[1]}:${time[2]} `;
-    setTimeout(() => { clock(); }, 500);
+    setTimeout(() => {
+        clock();
+    }, 500);
 }
 
 window.addEventListener('keydown', (e) => {

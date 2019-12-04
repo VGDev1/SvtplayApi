@@ -1,5 +1,6 @@
+/* eslint-disable */
+
 (function createHlsPlayer() {
-    console.log("hi");
     const url = new URLSearchParams(window.location.search).get('url');
     const video = document.getElementById('video');
     console.log(url);
@@ -22,4 +23,4 @@
             video.play();
         });
     }
-}());
+})();

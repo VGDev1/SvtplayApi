@@ -6,14 +6,14 @@ const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const morgan = require('morgan');
 const fetch = require('node-fetch');
-const logger = require('./config/logger');
 const redis = require('./controllers/redis');
+const autocache = require('./config/autocache');
+const logger = require('./config/logger');
 require('dotenv').config('./config/.env');
 
 // All routes.js files imported
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
-const usersRouter = require('./routes/users');
 const proxyRouter = require('./routes/proxy');
 
 const app = express();
@@ -23,7 +23,9 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Modules for app to use
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/app_info.log'), { flags: 'a' });
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/app_info.log'), {
+    flags: 'a',
+});
 app.use(morgan('tiny', { stream: accessLogStream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -33,7 +35,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 // All the routes deployed as paths
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
-app.use('/users', usersRouter);
 app.use('/proxy', proxyRouter);
 
 // catch 404 and forward to error handler
@@ -52,17 +53,26 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 
-// autofetch on start to cache immediately
-(async (req, res, next) => {
-    const nextHour = (60 - new Date().getMinutes()) * 60;
-    setTimeout(async () => {
-        // redis.flush();
-        const d1 = await fetch('http://localhost:3000/api/svt/program/AO');
-        const atillo = await d1.json();
-        redis.cache(atillo);
-        redis.getCache(atillo);
-        logger.info('fetch AO self INVOKED!');
-    }, nextHour);
+(async (req, res) => {
+    console.time('getDB');
+    const data = await redis.getKey('*');
+    console.timeEnd('getDB');
+    fs.writeFileSync(path.join(__dirname, './public/json/test.json'), data, (err) => {
+        if (err) console.error(err);
+        return logger.info('SUCCESS.');
+    });
+    /*
+    console.time('AUTO FETCH');
+    const d1 = await fetch('http://localhost:3000/api/svt/program/AO');
+    const atillo = await d1.json();
+    console.time('cache');
+    redis.cache(atillo);
+    console.timeEnd('cache');
+    // const resp = await redis.getKeys('A*');
+    // logger.info(resp);
+
+    console.timeEnd('AUTO FETCH');
+    */
 })();
 
 module.exports = app;

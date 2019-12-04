@@ -75,7 +75,9 @@ getPrograms('populart')
             e.addEventListener('click', () => {
                 getVideoId(e.lastChild.textContent)
                     .then((r) => getm3u8Link(r.svtVideoId))
-                    .then((r) => window.location.assign(`./electron/videoplayer.html?url=${r.m3u8}`))
+                    .then((r) =>
+                        window.location.assign(`./electron/videoplayer.html?url=${r.m3u8}`),
+                    )
                     .catch((err) => console.error(err));
             }),
         );
