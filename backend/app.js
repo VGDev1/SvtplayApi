@@ -7,7 +7,6 @@ const fs = require('fs');
 const morgan = require('morgan');
 const fetch = require('node-fetch');
 const redis = require('./controllers/redis');
-const autocache = require('./config/autocache');
 const logger = require('./config/logger');
 require('dotenv').config('./config/.env');
 
@@ -54,25 +53,18 @@ app.use((err, req, res, next) => {
 });
 
 (async (req, res) => {
-    console.time('getDB');
-    const data = await redis.getKey('*');
-    console.timeEnd('getDB');
-    fs.writeFileSync(path.join(__dirname, './public/json/test.json'), data, (err) => {
-        if (err) console.error(err);
-        return logger.info('SUCCESS.');
-    });
-    /*
     console.time('AUTO FETCH');
     const d1 = await fetch('http://localhost:3000/api/svt/program/AO');
     const atillo = await d1.json();
     console.time('cache');
     redis.cache(atillo);
+    const sorted = await redis.getMostPopular();
+    fs.writeFile(path.join(__dirname, '/public/json/test.json'), sorted, (err) => {
+        if (err) return console.error(err);
+        return console.log('successfully wrote test file');
+    });
     console.timeEnd('cache');
-    // const resp = await redis.getKeys('A*');
-    // logger.info(resp);
-
     console.timeEnd('AUTO FETCH');
-    */
 })();
 
 module.exports = app;

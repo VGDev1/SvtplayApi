@@ -1,4 +1,5 @@
 const fetch = require('node-fetch');
+const redis = require('../controllers/redis');
 // eslint-ignore
 const programUrl =
     'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=ProgramsListing&variables={"legacyIds":[24186554]}&extensions={"persistedQuery":{"version":1,"sha256Hash":"1eeb0fb08078393c17658c1a22e7eea3fbaa34bd2667cec91bbc4db8d778580f"}}';
@@ -69,6 +70,7 @@ const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
 const createSortedJson = (json) => {
     console.time('sorted');
     const sorted = json.program.sort((a, b) => parseFloat(b[3]) - parseFloat(a[3]));
+    redis.cache(json.splice(0, 50));
     console.timeEnd('sorted');
     return sorted;
 };

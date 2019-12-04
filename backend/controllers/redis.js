@@ -1,12 +1,14 @@
 const redis = require('redis');
 const rejson = require('redis-rejson');
-const fs = require('fs');
-const path = require('path');
 const logger = require('../config/logger');
 
 rejson(redis);
 
 const client = redis.createClient();
+
+client.on('connect', () => {
+    logger.info('connected to redis DB');
+});
 client.on('error', (err) => {
     logger.error(`Error ${err}`);
 });
@@ -19,6 +21,7 @@ async function Cache(data) {
         client.hset(data[i][0], 'type', 'application/json; charset=utf-8');
     }
 }
+
 function jsonSet(data) {
     client.json_set('allaProgram', '.', data, (err) => {
         if (err) {
@@ -36,13 +39,10 @@ function jsonSet(data) {
 }
 
 /**
- * Get cache from Redis db
- * @param {*} data - json object to iterate over
- * to check if Redis db contains hashSet for keys in data
- */
-
-/**
- * Get key from Redis
+ * Get all field - values for a key from Redis
+ * @param entry - key pattern to get hash from
+ * returns an object with the entry name followed
+ * by all field values
  */
 async function getHashKey(entry) {
     return new Promise((fullfill, reject) => {
@@ -64,6 +64,12 @@ async function getCacheArray(data) {
     };
 }
 
+/**
+ * Get keys from Redis DB  by pattern matching
+ * @param key - key pattern to fetch from db. A* A? etc.
+ * returns JSON as a string. to use as valid json,
+ * JSON.parse() the response from this function.
+ */
 async function getKey(key) {
     return new Promise((fullfill, reject) => {
         if (key == undefined || null) {
@@ -83,6 +89,16 @@ async function getKey(key) {
 }
 
 /**
+ * Gets the n most popular program on SVTPlay
+ * @param {*} n - numbers of popular programs wanted to be reieceved.
+ */
+async function getMostPopular(n) {
+    const db = await getKey('*');
+    const json = await JSON.parse(db);
+    return json.sort((a, b) => parseFloat(b.popularitet) - parseFloat(a.popularitet)).splice(0, n);
+}
+
+/**
  * erases all local Redis db entries
  */
 
@@ -96,3 +112,4 @@ exports.flush = flushCache;
 exports.getCacheArray = getCacheArray;
 exports.jsonSet = jsonSet;
 exports.getKey = getKey;
+exports.getMostPopular = getMostPopular;
