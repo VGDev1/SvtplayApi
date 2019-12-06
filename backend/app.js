@@ -3,10 +3,8 @@ const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
-const fs = require('fs');
 const morgan = require('morgan');
-const fetch = require('node-fetch');
-const redis = require('./controllers/redis');
+const autofetch = require('./controllers/cache');
 const logger = require('./config/logger');
 require('dotenv').config('./config/.env');
 
@@ -22,10 +20,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
 // Modules for app to use
-const accessLogStream = fs.createWriteStream(path.join(__dirname, 'logs/app_info.log'), {
-    flags: 'a',
-});
-app.use(morgan('tiny', { stream: accessLogStream }));
+app.use(morgan('tiny', { stream: logger.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -52,19 +47,7 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 
-(async (req, res) => {
-    console.time('AUTO FETCH');
-    const d1 = await fetch('http://localhost:3000/api/svt/program/AO');
-    const atillo = await d1.json();
-    console.time('cache');
-    redis.cache(atillo);
-    const sorted = await redis.getMostPopular();
-    fs.writeFile(path.join(__dirname, '/public/json/test.json'), sorted, (err) => {
-        if (err) return console.error(err);
-        return console.log('successfully wrote test file');
-    });
-    console.timeEnd('cache');
-    console.timeEnd('AUTO FETCH');
-})();
+// auto fetch and cache the response
+autofetch.cache();
 
 module.exports = app;

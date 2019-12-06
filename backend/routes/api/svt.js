@@ -1,16 +1,20 @@
 const express = require('express');
 const redis = require('../../controllers/redis');
 const logger = require('../../config/logger');
+const cache = require('../../controllers/cache');
 
 const router = express.Router();
 const svtapi = require('../../controllers/svtplay');
 
+/**
+ * Function for getting all programs from both svt API's
+ *  and returning parsed, fully functional json for backend response
+ */
 const getAllPrograms = async () => {
-    const p1 = svtapi
-        .getURLProxy(svtapi.programUrlSimple, 'simple')
-        .then((r) => svtapi.createSimpleJson(r));
-    const p2 = svtapi.getURL(svtapi.programUrl, 'programUrl');
-    const pr = Promise.all([p1, p2]);
+    const getSimple = svtapi.getURLProxy(svtapi.programUrlSimple, 'simple');
+    const simpleJson = svtapi.createSimpleJson(await getSimple);
+    const AdvancedJson = svtapi.getURL(svtapi.programUrl, 'programUrl');
+    const pr = Promise.all([simpleJson, AdvancedJson]);
     try {
         const p = await pr;
         const d = svtapi.createAdvancedJson(p[0], p[1]);
@@ -29,6 +33,7 @@ router.get('/', (req, res) => {
 
 /**
  * Get Video id for certain program
+ * where /:id path is the svtVideoId for the show
  */
 router.get('/getVideoId/:id', (req, res, next) => {
     svtapi
@@ -38,26 +43,24 @@ router.get('/getVideoId/:id', (req, res, next) => {
 });
 
 /**
- * Check if cache exists, else go to next getter for same path
+ * Router for getting a json response of programs
+ * @param /:id takes a Character or special-string
+ * A-Ö, for a repsonse of all programs that starts with the character,
+ * AO - responds with all programs available
+ * populart - response with the 50 most popular programs right now
  */
-router.get('/program/:id', async (req, res, next) => {
-    function id() {
-        if (req.params.id == 'AO') return '*';
-        if (req.params.id == 'X' || undefined || null) return next();
-        if (req.params.id == 'populart') return '*';
-        return `${req.params.id}*`;
-    }
-    const data = await redis.getKey(id()).catch((e) => logger.error(`Error: ${e.message}`));
-    if (data != undefined && data.length > 2) return res.json({ data: JSON.parse(data) });
-    return logger.info('Did not find any cache. Or was an error thrown?');
-});
-
-router.get('/program/:id', async (req, res, next) => {
+router.get('/program/:id', cache.checkCache, async (req, res, next) => {
+    console.log('HEJ');
     logger.info(req.params.id);
-    return res.json({ error: 'Endpoint does not exist' });
+    const data = await getAllPrograms();
+    redis.cache(data);
+    return res.json({ program: data });
 });
 
-/* GET users listing. */
+/*
+ * Get M3u8 link for a show where
+ * /:id is the ...
+ */
 router.get('/m3u8/:id', (req, res, next) => {
     svtapi
         .getM3u8Link(req.params.id)

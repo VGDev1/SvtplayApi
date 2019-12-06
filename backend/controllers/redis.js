@@ -13,29 +13,16 @@ client.on('error', (err) => {
     logger.error(`Error ${err}`);
 });
 
+/**
+ * @deprecated replaced by cache.js controller
+ */
 async function Cache(data) {
     for (let i = 0; i < data.length; i++) {
-        client.hset(data[i][0], 'thumbnail', data[i][1]);
-        client.hset(data[i][0], 'svtId', data[i][2]);
-        client.hset(data[i][0], 'popularitet', data[i][3]);
-        client.hset(data[i][0], 'type', 'application/json; charset=utf-8');
+        client.hset(data[i].title, 'id', data[i].id);
+        client.hset(data[i].title, 'slug', data[i].slug);
+        client.hset(data[i].title, 'thumbnail', data[i].thumbnail);
+        client.hset(data[i].title, 'popularity', data[i].popularity);
     }
-}
-
-function jsonSet(data) {
-    client.json_set('allaProgram', '.', data, (err) => {
-        if (err) {
-            throw err;
-        }
-        logger.info('Set JSON at key');
-        client.json_get('my-json', '.test', (err, value) => {
-            if (err) {
-                throw err;
-            }
-            logger.info('value of test:', value); // outputs 1234
-            client.quit();
-        });
-    });
 }
 
 /**
@@ -47,25 +34,31 @@ function jsonSet(data) {
 async function getHashKey(entry) {
     return new Promise((fullfill, reject) => {
         client.hgetall(entry, (err, keys) => {
-            if (err) reject(console.error(err));
+            if (err) reject(new Error(`failed to get key ${entry}`));
             return fullfill({ entry, keys });
         });
     });
 }
 
+/**
+ * Function that recieves a key from @function getKey
+ * It then passes the array forward to @function getHashKey ,
+ * takes the response, parses and returns it as an Object
+ */
 async function getCacheArray(data) {
     const array = [];
     await getHashKey(data).then((resp) => array.push(resp));
     return {
         name: array[0].entry,
-        thumbnail: array[0].keys.thumbnail,
-        svtId: array[0].keys.svtId,
-        popularitet: array[0].keys.popularitet,
+        svtId: array[0].keys.id,
+        slug: array[0].keys.slug,
+        thumbnail: array[0].keys.thumbnail.replace(/140/, 400),
+        popularity: array[0].keys.popularity,
     };
 }
 
 /**
- * Get keys from Redis DB  by pattern matching
+ * Get keys from Redis DB by pattern matching
  * @param key - key pattern to fetch from db. A* A? etc.
  * returns JSON as a string. to use as valid json,
  * JSON.parse() the response from this function.
@@ -80,10 +73,15 @@ async function getKey(key) {
             if (err) {
                 return reject(logger.info(err));
             }
+            if (key == ('X*' || null || undefined)) {
+                data.push({ err: `no entries in db for ${key}` });
+                return fullfill(data);
+            }
             for (let i = 0, len = keys.length; i < len; i++) {
                 data.push(await getCacheArray(keys[i]));
             }
-            return fullfill(JSON.stringify(data));
+            const resp = await JSON.stringify(data);
+            return fullfill(JSON.parse(resp));
         });
     });
 }
@@ -94,8 +92,7 @@ async function getKey(key) {
  */
 async function getMostPopular(n) {
     const db = await getKey('*');
-    const json = await JSON.parse(db);
-    return json.sort((a, b) => parseFloat(b.popularitet) - parseFloat(a.popularitet)).splice(0, n);
+    return db.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity)).splice(0, n);
 }
 
 /**
@@ -110,6 +107,5 @@ function flushCache() {
 exports.cache = Cache;
 exports.flush = flushCache;
 exports.getCacheArray = getCacheArray;
-exports.jsonSet = jsonSet;
 exports.getKey = getKey;
 exports.getMostPopular = getMostPopular;

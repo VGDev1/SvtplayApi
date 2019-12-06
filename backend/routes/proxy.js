@@ -4,13 +4,16 @@ const svtapi = require('../controllers/svtplay.js');
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     const { url } = req.query;
     logger.info(url);
-    svtapi
-        .getURLProxy(url)
-        .then((resp) => res.json({ message: resp }))
-        .catch((e) => logger.info(e));
+    try {
+        const data = svtapi.getURLProxy(url);
+        const resp = await data.json();
+        return res.json({ message: resp });
+    } catch (e) {
+        return logger.error(e);
+    }
 });
 
 module.exports = router;

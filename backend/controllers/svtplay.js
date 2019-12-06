@@ -41,36 +41,58 @@ const getURL = async (apiurl) => {
     console.timeEnd('json');
     return resp;
 };
+/**
+ * Function that parses ONLY data from the SVT api at
+ * https://www.svtplay.se/api/search_autocomplete_list
+ * @param json - data to parse through the SimpleJson parser
+ */
 
 const createSimpleJson = (json) => {
     console.time('simple');
     const data = { program: [] };
     for (let i = 0; i < json.length; i++) {
-        data.program.push([json[i].title, json[i].popularity, json[i].thumbnail]);
+        data.program.push({
+            title: json[i].title,
+            url: json[i].url.split('/')[1],
+            thumbnail: json[i].thumbnail,
+            popularity: json[i].popularity,
+        });
     }
     console.timeEnd('simple');
     return data;
 };
 
+/**
+ * Function that combines data from both SVT API endpoints
+ * and converts them to one json object for each program.
+ * @param {*} JsonSimple - parsed json from the @function createSimpleJson method
+ * @param {*} JsonAdvanced  - parsed json from the @function createAdvancedJson method
+ */
+
 const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
     console.time('advanced');
     const data = { program: [] };
     for (let i = 0; i < JsonAdvanced.data.programAtillO.flat.length; i++) {
-        data.program.push([
-            JsonSimple.program[i][0],
-            JsonSimple.program[i][2],
-            JsonAdvanced.data.programAtillO.flat[i].id,
-            JsonSimple.program[i][1],
-        ]);
+        data.program.push({
+            title: JsonSimple.program[i].title,
+            id: JsonAdvanced.data.programAtillO.flat[i].id,
+            slug: JsonSimple.program[i].url,
+            thumbnail: JsonSimple.program[i].thumbnail,
+            popularity: JsonSimple.program[i].popularity,
+        });
     }
     console.timeEnd('advanced');
     return data;
 };
 
+/**
+ * Sorted the result from @function createAdvancedJson
+ * Sorts the objects by the value from popularity key
+ */
+
 const createSortedJson = (json) => {
     console.time('sorted');
-    const sorted = json.program.sort((a, b) => parseFloat(b[3]) - parseFloat(a[3]));
-    redis.cache(json.splice(0, 50));
+    const sorted = json.program.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity));
     console.timeEnd('sorted');
     return sorted;
 };
