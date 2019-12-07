@@ -19,6 +19,12 @@ async function getm3u8Link(id) {
     return resp;
 }
 
+async function getEpisodes(slug) {
+    const data = await fetch(`http://localhost:3000/api/svt/episodes${slug}`);
+    const resp = await data.json();
+    return resp;
+}
+
 function createDiv(parent) {
     const link = document.createElement('a');
     parent.append(link);
