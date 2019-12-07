@@ -40,7 +40,7 @@ function time() {
 }
 
 function clock() {
-    document.getElementById('clock').innerHTML = `${date() + time[0]}:${time[1]}:${time[2]} `;
+    document.getElementById('clock').innerHTML = `${date() + time()[0]}:${time()[1]}:${time()[2]} `;
     setTimeout(() => {
         clock();
     }, 500);
@@ -53,6 +53,6 @@ window.addEventListener('keydown', (e) => {
 });
 
 $('document').ready(() => {
-    if (window.location.pathname === '/start.html') clock();
-    console.log(window.location.pathname);
+    const path = window.location.pathname.split('/').pop();
+    if (path === 'start.html') clock();
 });

@@ -1,62 +1,71 @@
 const videoElements = document.querySelector('.flex-container');
 
 async function getPrograms(section) {
-    const data = await fetch(`http://localhost:3000/api/svt/program/${section}`, {
-        cache: 'no-store',
-    });
+    console.log(section);
+    const data = await fetch(`http://localhost:3000/api/svt/program/${section}`);
     const resp = await data.json();
     return resp;
 }
 
 async function getVideoId(id) {
-    const data = await fetch(`http://localhost:3000/api/svt/getVideoId/${id}`, {
-        cache: 'no-store',
-    });
+    const data = await fetch(`http://localhost:3000/api/svt/getVideoId/${id}`);
     const resp = await data.json();
     return resp;
 }
 
 async function getm3u8Link(id) {
-    const data = await fetch(`http://localhost:3000/api/svt/m3u8/${id}`, {
-        cache: 'no-store',
-    });
+    const data = await fetch(`http://localhost:3000/api/svt/m3u8/${id}`);
     const resp = await data.json();
     return resp;
 }
 
-function getThumbnail(url) {
-    return url.replace(/140/, /500/);
+function createDiv(parent) {
+    const link = document.createElement('a');
+    parent.append(link);
+    link.href = '#';
+    return link;
 }
 
-function createDiv(parent, video) {
-    const name = document.createElement('a');
-    const id = document.createElement('p');
+function setThumbnail(data) {
     const img = document.createElement('img');
-    const link = document.createElement('a');
-
-    parent.append(link);
-
-    link.append(img);
-    link.append(name);
-    link.append(id);
-
-    link.href = '#';
-    img.setAttribute('src', getThumbnail(video[1]));
+    img.setAttribute('src', data.thumbnail);
     img.className = 'thumbnail';
-    name.textContent = video[0].replace(/\\\//g, '/');
-    name.className = 'videoname';
-    id.className = 'svtId';
-    id.textContent = video[2];
+    return img;
+}
+
+function setTitle(data) {
+    const title = document.createElement('a');
+    title.textContent = data.name.replace(/\\\//g, '/');
+    title.className = 'videoname';
+    return title;
+}
+function setDesc(desc, data) {}
+
+function miscData(data) {
+    const svtId = document.createElement('p');
+    const slug = document.createElement('p');
+    svtId.className = 'svtId';
+    svtId.textContent = data.svtId;
+    slug.className = 'slug';
+    slug.textContent = data.slug;
+    return [svtId, slug];
+}
+
+function createCompleteDiv(parent, data) {
+    const subparent = createDiv(parent);
+    const thumbnail = setThumbnail(data);
+    const title = setTitle(data);
+    const misc = miscData(data);
+    subparent.append(thumbnail, title, misc[0], misc[1]);
 }
 
 function drawPopular(video) {
-    console.log(video[0]);
     for (let i = 0; i < 50; i += 1) {
-        console.log(video[i]);
+        console.log(video.program[i]);
         const videoElement = document.createElement('div');
         videoElements.append(videoElement);
         videoElement.className = 'media';
-        createDiv(videoElement, video[i]);
+        createCompleteDiv(videoElement, video.program[i]);
     }
 }
 
@@ -65,20 +74,20 @@ window.addEventListener('keydown', (e) => {
     console.log(evtobj.ctrlKey);
     if (evtobj.ctrlKey && evtobj.keyCode == 39) window.history.back();
 });
-
-getPrograms('populart')
-    .then((json) => drawPopular(json))
-    .then(() => {
-        const playVideo = document.querySelectorAll('div.media > a');
-        console.log(playVideo);
-        playVideo.forEach((e) =>
-            e.addEventListener('click', () => {
-                getVideoId(e.lastChild.textContent)
-                    .then((r) => getm3u8Link(r.svtVideoId))
-                    .then((r) =>
-                        window.location.assign(`./electron/videoplayer.html?url=${r.m3u8}`),
-                    )
-                    .catch((err) => console.error(err));
-            }),
-        );
-    });
+// console.log(window.location.pathname);
+document.onreadystatechange = async () => {
+    getPrograms('populart').then((r) => drawPopular(r));
+    if (document.readyState === 'interactive') {
+        console.log('hej');
+    } else if (document.readyState == 'complete') {
+    }
+};
+const playVideo = document.querySelectorAll('div.media > a');
+console.log(playVideo);
+playVideo.forEach((e) =>
+    e.addEventListener('click', () => {
+        if (e.lastElementChild.textContent !== 'program') {
+            // then get slug api endpoint
+        } else getVideoId(e.lastElementChild);
+    }),
+);
