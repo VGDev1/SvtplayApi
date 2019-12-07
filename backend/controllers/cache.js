@@ -26,15 +26,21 @@ exports.cache = async (req, res) => {
  * Check if cache exists, else go to next router.get for same path
  */
 exports.checkCache = async (req, res, next) => {
+    console.time('getById');
     async function getById() {
         if (req.params.id == 'AO') return redis.getKey('*');
         if (req.params.id == 'populart') return redis.getMostPopular(50);
         if (req.params.id.match(/^[A-Z]{1}/)) return redis.getKey(`${req.params.id}*`);
         return next();
     }
+    console.timeEnd('getById');
+    console.time('getDB');
     const data = await getById().catch((e) => console.log(e));
+    console.timeEnd('getDB');
+    console.time('ifstates');
     if (data[0] == (undefined || null)) return next();
     if (data && data[0].err) return res.json({ err: data[0].err });
     if (data) return res.json({ program: data });
+    console.timeEnd('ifstates');
     return logger.info('Did not find any cache. Was an error thrown?');
 };

@@ -79,6 +79,8 @@ const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
             slug: JsonSimple.program[i].url,
             thumbnail: JsonSimple.program[i].thumbnail,
             popularity: JsonSimple.program[i].popularity,
+            // eslint-disable-next-line no-underscore-dangle
+            type: JsonAdvanced.data.programAtillO.flat[i].__typename,
         });
     }
     console.timeEnd('advanced');
@@ -109,6 +111,17 @@ const getM3u8Link = async (svtVideoId) => {
     return m3u8;
 };
 
+const getEpisodes = async (slug) => {
+    const url = `https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=TitlePage&variables={"titleSlugs":"${slug}"}&extensions={"persistedQuery":{"version":1,"sha256Hash":"4122efcb63970216e0cfb8abb25b74d1ba2bb7e780f438bbee19d92230d491c5"}}`;
+    const json = await getURL(url);
+    const data = await json.data.listablesBySlug[0].associatedContent;
+    const resp = [];
+    for (let i = 0; i < data.length; i++) {
+        resp.push(await data[i]);
+    }
+    return resp;
+};
+
 // methods exports
 exports.getURLProxy = getURLProxy;
 exports.getURL = getURL;
@@ -117,6 +130,7 @@ exports.createAdvancedJson = createAdvancedJson;
 exports.createSortedJson = createSortedJson;
 exports.getSvtVideoId = getSvtVideoId;
 exports.getM3u8Link = getM3u8Link;
+exports.getEpisodes = getEpisodes;
 // variable exports
 exports.programUrl = programUrl;
 exports.programUrlSimple = programUrlSimple;
