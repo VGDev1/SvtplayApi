@@ -53,7 +53,7 @@ const createSimpleJson = (json) => {
     for (let i = 0; i < json.length; i++) {
         data.program.push({
             title: json[i].title,
-            url: json[i].url.split('/')[1],
+            url: json[i].url.split('/').pop(),
             thumbnail: json[i].thumbnail,
             popularity: json[i].popularity,
         });
@@ -107,7 +107,8 @@ const getSvtVideoId = async (videoid) => {
 
 const getM3u8Link = async (svtVideoId) => {
     const json = await getURL(programApiUrl + svtVideoId);
-    const m3u8 = json.videoReferences[1].url;
+    const link = json.videoReferences[1].url;
+    const m3u8 = decodeURIComponent(link).replace(/-fmp4/g, '');
     return m3u8;
 };
 

@@ -20,7 +20,7 @@ async function getm3u8Link(id) {
 }
 
 async function getEpisodes(slug) {
-    const data = await fetch(`http://localhost:3000/api/svt/episodes${slug}`);
+    const data = await fetch(`http://localhost:3000/api/svt/episodes/${slug}`);
     const resp = await data.json();
     return resp;
 }
