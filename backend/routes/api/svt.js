@@ -36,6 +36,7 @@ router.get('/', (req, res) => {
  * where /:id path is the svtVideoId for the show
  */
 router.get('/getVideoId/:id', (req, res, next) => {
+    console.log(req.params.id);
     svtapi
         .getSvtVideoId(req.params.id)
         .then((r) => res.json({ svtVideoId: r }))
@@ -50,11 +51,11 @@ router.get('/getVideoId/:id', (req, res, next) => {
  * populart - response with the 50 most popular programs right now
  */
 router.get('/program/:id', cache.checkCache, async (req, res, next) => {
-    console.log('HEJ');
     logger.info(req.params.id);
     const data = await getAllPrograms();
     redis.cache(data);
-    return res.json({ program: data });
+    const sorted = data.sort();
+    return res.json({ program: sorted });
 });
 
 /*

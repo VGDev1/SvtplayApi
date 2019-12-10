@@ -109,7 +109,6 @@ const getM3u8Link = async (svtVideoId) => {
     const json = await getURL(programApiUrl + svtVideoId);
     let link = '';
     for (let i = 0; i < json.videoReferences.length; i++) {
-        console.log(json);
         if (json.videoReferences[i].format == 'hls') link = json.videoReferences[i].url;
     }
     const m3u8 = decodeURIComponent(link).replace(/-fmp4/g, '');

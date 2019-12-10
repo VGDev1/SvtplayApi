@@ -31,14 +31,33 @@ exports.checkCache = async (req, res, next) => {
         if (req.params.id == 'AO') return redis.getKey('*');
         if (req.params.id == 'populart') return redis.getMostPopular(50);
         if (req.params.id.match(/^[A-Z]{1}/)) return redis.getKey(`${req.params.id}*`);
+        if (!/^[A-Z]{1}/.test(req.params.id)) {
+            return res.send({ error: 'Invalid request. Must be uppercase' }).end();
+        }
         return next();
     }
     console.timeEnd('getById');
     console.time('getDB');
     const data = await getById().catch((e) => console.log(e));
     console.timeEnd('getDB');
-    if (data[0] == (undefined || null)) return next();
-    if (data && data[0].err) return res.json({ err: data[0].err });
-    if (data) return res.json({ program: data });
+    try {
+        if (data && data[0].err) return res.json({ err: data[0].err });
+        if (data) {
+            const sorted = data.sort((a, b) => {
+                const x = a.name.toLowerCase();
+                const y = b.name.toLowerCase();
+                if (x < y) {
+                    return -1;
+                }
+                if (x > y) {
+                    return 1;
+                }
+                return 0;
+            });
+            return res.json({ program: sorted });
+        }
+    } catch (e) {
+        return null;
+    }
     return logger.info('Did not find any cache. Was an error thrown?');
 };

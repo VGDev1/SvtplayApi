@@ -63,6 +63,43 @@ async function getAllPrograms() {
         .catch((e) => console.error(e));
 }
 
-getAllPrograms();
-getSvtVideoId('2213942344').then((d) => console.log(d));
-getM3u8Link('eEd5x48').then((d) => console.log(d));
+async function getEpisodes(slug) {
+    const data = await fetch(`http://localhost:3000/api/svt/episodes/${slug}`);
+    const resp = await data.json();
+    return resp;
+}
+
+function getThumbnail(id, changed) {
+    return `https://www.svtstatic.se/image/small/224/${id}/${changed}?quality=90`;
+}
+
+function drawEpsiodes(data) {
+    console.log('jek');
+    const mainDiv = document.createElement('div');
+    const mediaDiv = document.createElement('div');
+    mediaDiv.className = 'media';
+    const season = document.createElement('h1');
+    season.textContent = data.data[0].name;
+    mainDiv.append(season, mediaDiv);
+    const thumbnail = document.createElement('img');
+    thumbnail.className = 'mr-3';
+    thumbnail.setAttribute(
+        'src',
+        getThumbnail(data.data[0].items[0].item.image.id, data.data[0].items[0].item.image.changed),
+    );
+    const mediaBody = document.createElement('div');
+    mediaDiv.append(thumbnail, mediaBody);
+    mediaBody.className = 'media-body';
+    const epName = document.createElement('p');
+    const desc = document.createElement('p');
+    desc.textContent = data.data[0].items[0].item.longDescription;
+    epName.textContent = data.data[0].items[0].item.name;
+    mediaBody.append(epName, desc);
+    document.body.appendChild(mainDiv);
+}
+
+getEpisodes('abel-och-fant').then((r) => drawEpsiodes(r));
+
+// getAllPrograms();
+// getSvtVideoId('2213942344').then((d) => console.log(d));
+// getM3u8Link('eEd5x48').then((d) => console.log(d));

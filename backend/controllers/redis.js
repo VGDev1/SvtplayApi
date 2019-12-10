@@ -52,7 +52,7 @@ async function getCacheArray(data) {
         name: array[0].entry,
         svtId: array[0].keys.id,
         slug: array[0].keys.slug,
-        thumbnail: array[0].keys.thumbnail.replace(/140/, 400),
+        thumbnail: array[0].keys.thumbnail.replace(140, 400),
         popularity: array[0].keys.popularity,
     };
 }
@@ -74,7 +74,7 @@ async function getKey(key) {
                 return reject(logger.info(err));
             }
             if (key == ('X*' || null || undefined)) {
-                data.push({ err: `no entries in db for ${key}` });
+                data.push({ error: `no entries in db for ${key}` });
                 return fullfill(data);
             }
             for (let i = 0, len = keys.length; i < len; i++) {
