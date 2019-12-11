@@ -54,8 +54,7 @@ router.get('/program/:id', cache.checkCache, async (req, res, next) => {
     logger.info(req.params.id);
     const data = await getAllPrograms();
     redis.cache(data);
-    const sorted = data.sort();
-    return res.json({ program: sorted });
+    return res.json({ program: data });
 });
 
 /*

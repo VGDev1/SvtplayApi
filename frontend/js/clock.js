@@ -46,12 +46,6 @@ function clock() {
     }, 500);
 }
 
-window.addEventListener('keydown', (e) => {
-    const evtobj = window.event ? event : e;
-    console.log(evtobj.ctrlKey);
-    if (evtobj.ctrlKey && evtobj.keyCode == 39) window.history.back();
-});
-
 $('document').ready(() => {
     const path = window.location.pathname.split('/').pop();
     if (path === 'start.html') clock();

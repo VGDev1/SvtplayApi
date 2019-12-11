@@ -41,6 +41,7 @@ exports.checkCache = async (req, res, next) => {
     const data = await getById().catch((e) => console.log(e));
     console.timeEnd('getDB');
     try {
+        if (data.length == 0) return next();
         if (data && data[0].err) return res.json({ err: data[0].err });
         if (data) {
             const sorted = data.sort((a, b) => {
@@ -56,8 +57,9 @@ exports.checkCache = async (req, res, next) => {
             });
             return res.json({ program: sorted });
         }
+        return next();
     } catch (e) {
-        return null;
+        console.log(e);
     }
     return logger.info('Did not find any cache. Was an error thrown?');
 };

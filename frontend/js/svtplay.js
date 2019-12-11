@@ -98,8 +98,9 @@ function drawEpsiodes(data) {
     document.body.appendChild(mainDiv);
 }
 
-getEpisodes('abel-och-fant').then((r) => drawEpsiodes(r));
-
+getEpisodes('abel-och-fant') // .then((r) => drawEpsiodes(r));
+    .then((id) => getM3u8Link(id.data[0].items[0].item.videoSvtId))
+    .then((r) => console.log(r));
 // getAllPrograms();
 // getSvtVideoId('2213942344').then((d) => console.log(d));
 // getM3u8Link('eEd5x48').then((d) => console.log(d));

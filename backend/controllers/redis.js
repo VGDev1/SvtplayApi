@@ -77,9 +77,11 @@ async function getKey(key) {
                 data.push({ error: `no entries in db for ${key}` });
                 return fullfill(data);
             }
+            console.time('loop_getcachearray');
             for (let i = 0, len = keys.length; i < len; i++) {
                 data.push(await getCacheArray(keys[i]));
             }
+            console.timeEnd('loop_getcachearray');
             const resp = await JSON.stringify(data);
             return fullfill(JSON.parse(resp));
         });

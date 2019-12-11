@@ -75,19 +75,6 @@ function drawPopular(video) {
     }
 }
 
-window.addEventListener('keydown', (e) => {
-    const evtobj = window.event ? event : e;
-    console.log(evtobj.ctrlKey);
-    if (evtobj.ctrlKey && evtobj.keyCode == 39) window.history.back();
-});
-// console.log(window.location.pathname);
-document.onreadystatechange = async () => {
-    getPrograms('populart').then((r) => drawPopular(r));
-    if (document.readyState === 'interactive') {
-        console.log('hej');
-    } else if (document.readyState == 'complete') {
-    }
-};
 const playVideo = document.querySelectorAll('div.media > a');
 console.log(playVideo);
 playVideo.forEach((e) =>
