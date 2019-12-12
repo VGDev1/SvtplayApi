@@ -12,7 +12,6 @@ exports.cache = async (req, res) => {
     console.time('AUTO FETCH');
     const d1 = await fetch('http://localhost:3000/api/svt/program/AO');
     const atillo = await d1.json();
-    console.log(atillo);
     console.time('cache');
     redis.cache(atillo);
     fs.writeFile(path.join(__dirname, '../public/json/test.json'), null, (err) => {

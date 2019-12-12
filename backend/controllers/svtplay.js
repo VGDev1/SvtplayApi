@@ -47,13 +47,20 @@ const getURL = async (apiurl) => {
  * @param json - data to parse through the SimpleJson parser
  */
 
+function trimUrl(url) {
+    const trimmed = url.split('/');
+    console.log(trimmed);
+    if (trimmed.length == 2) return trimmed[1];
+    return trimmed[2];
+}
+
 const createSimpleJson = (json) => {
     console.time('simple');
     const data = { program: [] };
     for (let i = 0; i < json.length; i++) {
         data.program.push({
             title: json[i].title,
-            url: json[i].url.split('/').pop(),
+            url: trimUrl(json[i].url),
             thumbnail: json[i].thumbnail,
             popularity: json[i].popularity,
         });
@@ -83,7 +90,6 @@ const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
             type: JsonAdvanced.data.programAtillO.flat[i].__typename,
         });
     }
-    console.log(data.program[0]);
     console.timeEnd('advanced');
     return data;
 };

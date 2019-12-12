@@ -1,8 +1,9 @@
 const redis = require('redis');
+const bluebird = require('bluebird');
 const rejson = require('redis-rejson');
 const logger = require('../config/logger');
 
-rejson(redis);
+bluebird.promisifyAll(redis);
 
 const client = redis.createClient();
 
