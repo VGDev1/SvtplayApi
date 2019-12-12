@@ -71,6 +71,7 @@ router.get('/m3u8/:id', (req, res, next) => {
 router.get('/episodes/:slug', async (req, res, next) => {
     console.log(req.params.slug);
     const data = await svtapi.getEpisodes(req.params.slug);
+    console.log(data);
     return res.json({ data });
 });
 

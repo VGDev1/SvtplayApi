@@ -22,6 +22,7 @@ async function Cache(data) {
         client.hset(data[i].title, 'slug', data[i].slug);
         client.hset(data[i].title, 'thumbnail', data[i].thumbnail);
         client.hset(data[i].title, 'popularity', data[i].popularity);
+        client.hset(data[i].title, 'type', data[i].type);
     }
 }
 
@@ -54,6 +55,7 @@ async function getCacheArray(data) {
         slug: array[0].keys.slug,
         thumbnail: array[0].keys.thumbnail.replace(140, 400),
         popularity: array[0].keys.popularity,
+        type: array[0].keys.type,
     };
 }
 

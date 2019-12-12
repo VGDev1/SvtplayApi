@@ -83,6 +83,7 @@ const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
             type: JsonAdvanced.data.programAtillO.flat[i].__typename,
         });
     }
+    console.log(data.program[0]);
     console.timeEnd('advanced');
     return data;
 };
