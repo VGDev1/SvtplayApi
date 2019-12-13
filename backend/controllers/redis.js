@@ -1,11 +1,10 @@
 const redis = require('redis');
 const bluebird = require('bluebird');
-const rejson = require('redis-rejson');
 const logger = require('../config/logger');
 
-bluebird.promisifyAll(redis);
-
 const client = redis.createClient();
+
+bluebird.promisifyAll(client);
 
 client.on('connect', () => {
     logger.info('connected to redis DB');
@@ -59,6 +58,14 @@ async function getCacheArray(data) {
         type: array[0].keys.type,
     };
 }
+
+exports.getKeys = async (key) => {
+    return client.keysAsync(key);
+};
+
+exports.getKeyHash = async (key) => {
+    return client.hgetallAsync(key);
+};
 
 /**
  * Get keys from Redis DB by pattern matching

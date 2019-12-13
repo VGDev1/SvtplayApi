@@ -24,6 +24,26 @@ const getAllPrograms = async () => {
     }
 };
 
+router.get('/test', async (req, res) => {
+    console.time('newDB');
+    const data = await redis.getKeys('*');
+    const getHash = async (key) => redis.getKeyHash(key);
+    const resp = data.map(async (key) => {
+        const hash = await getHash(key);
+        return {
+            name: key,
+            id: hash.id,
+            slug: hash.slug,
+            thumbnail: hash.thumbnail,
+            popularity: hash.popularity,
+            type: hash.type,
+        };
+    });
+    const obj = await Promise.all(resp);
+    console.timeEnd('newDB');
+    res.json({ obj });
+});
+
 /**
  * Return 404 error if trying to access root path
  */

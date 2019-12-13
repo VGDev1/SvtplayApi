@@ -49,7 +49,6 @@ const getURL = async (apiurl) => {
 
 function trimUrl(url) {
     const trimmed = url.split('/');
-    console.log(trimmed);
     if (trimmed.length == 2) return trimmed[1];
     return trimmed[2];
 }
