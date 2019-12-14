@@ -1,9 +1,9 @@
 const createError = require('http-errors');
+const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const logger = require('../config/logger');
-const express = require('express');
 
 exports.app = (app) => {
     // Set CORS headers
@@ -21,12 +21,12 @@ exports.app = (app) => {
     app.set('view engine', 'pug');
 
     // Modules for app to use
-    app.use(morgan('tiny', { stream: logger.stream }));
+    // app.use(morgan('tiny', { stream: logger.stream }));
     app.use(express.json());
     app.use(express.urlencoded({ extended: false }));
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, '/../public')));
-
+    console.log('test');
     // catch 404 and forward to error handler
     app.use((req, res, next) => {
         next(createError(404));
