@@ -2,6 +2,7 @@ const express = require('express');
 const redis = require('../../controllers/redis');
 const logger = require('../../config/logger');
 const cache = require('../../controllers/cache');
+const svtapi = require('../../controllers/svtplay');
 
 const router = express.Router();
 

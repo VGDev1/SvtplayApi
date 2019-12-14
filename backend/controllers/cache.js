@@ -77,6 +77,7 @@ exports.checkNewCache = async (req, res, next) => {
     try {
         console.time('newDB');
         const data = await getById();
+        if (data.length === 0) return next();
         const getHash = async key => redis.getKeyHash(key);
         const resp = data.map(async key => {
             const hash = await getHash(key);
