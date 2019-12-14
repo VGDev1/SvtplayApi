@@ -1,3 +1,6 @@
+import api from './api';
+import proxy from './proxy';
+
 const express = require('express');
 
 const router = express.Router();
@@ -6,5 +9,8 @@ const router = express.Router();
 router.get('/', (req, res, next) => {
     res.render('index', { title: 'Express' });
 });
+
+router.use('/proxy', proxy);
+router.use('/api', api);
 
 module.exports = router;

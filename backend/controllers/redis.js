@@ -23,8 +23,22 @@ async function Cache(data) {
         client.hset(data[i].title, 'thumbnail', data[i].thumbnail);
         client.hset(data[i].title, 'popularity', data[i].popularity);
         client.hset(data[i].title, 'type', data[i].type);
+        client.hse;
     }
 }
+
+/**
+ * Set a multiple hashes (field, values) to a key in RedisDB
+ * @async
+ * @exports
+ * @param {string[]} array an array containting ["keyName", "Field1", "Value1". "Field2", "Value2"...]
+ *
+ */
+exports.testSetHmap = async (array) => {
+    if (!Array.isArray(array)) throw new Error('An array is required to set hash in RedisDB');
+    if(array.length < 3) throw new Error("Length of array must be atleast 3. [keyName, Field, Value, ...] ")
+    return client.hmsetAsync(array);
+};
 
 /**
  * Get all field - values for a key from Redis

@@ -5,7 +5,7 @@ const logger = winston.createLogger({
     format: winston.format.combine(
         winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         winston.format.json(),
-        winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
+        winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
     ),
     transports: [
         new winston.transports.Console({
@@ -13,7 +13,7 @@ const logger = winston.createLogger({
                 winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
                 winston.format.colorize(),
                 winston.format.simple(),
-                winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
+                winston.format.printf(info => `${info.timestamp} ${info.level}: ${info.message}`),
             ),
         }),
         new winston.transports.File({ filename: './logs/app_info.log', level: 'info' }),

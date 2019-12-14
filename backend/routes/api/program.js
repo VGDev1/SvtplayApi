@@ -30,7 +30,7 @@ const getAllPrograms = async () => {
  * AO - responds with all programs available
  * populart - response with the 50 most popular programs right now
  */
-router.get('/program/:id', cache.checkCache, async (req, res, next) => {
+router.get('/program/:id', cache.checkNewCache, async (req, res, next) => {
     logger.info(req.params.id);
     const data = await getAllPrograms();
     redis.cache(data);

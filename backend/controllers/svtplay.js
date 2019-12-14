@@ -1,14 +1,10 @@
 const fetch = require('node-fetch');
-const redis = require('../controllers/redis');
-// eslint-ignore
-const programUrl =
-    'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=ProgramsListing&variables={"legacyIds":[24186554]}&extensions={"persistedQuery":{"version":1,"sha256Hash":"1eeb0fb08078393c17658c1a22e7eea3fbaa34bd2667cec91bbc4db8d778580f"}}';
+// prettier-ignore
+const programUrl =          'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=ProgramsListing&variables={"legacyIds":[24186554]}&extensions={"persistedQuery":{"version":1,"sha256Hash":"1eeb0fb08078393c17658c1a22e7eea3fbaa34bd2667cec91bbc4db8d778580f"}}';
 const programUrlSimple = 'https://www.svtplay.se/api/search_autocomplete_list';
 const programApiUrl = 'https://api.svt.se/video/';
-const specificProgramUrl1 =
-    'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=VideoPage&variables={"legacyIds":"';
-const specificProgramUrl2 =
-    '"}&extensions={"persistedQuery":{"version":1,"sha256Hash":"ae75c500d4f6f8743f6673f8ade2f8af89fb019d4b23f464ad84658734838c78"}}';
+const specificProgramUrl1 = 'https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=VideoPage&variables={"legacyIds":"';
+const specificProgramUrl2 = '"}&extensions={"persistedQuery":{"version":1,"sha256Hash":"ae75c500d4f6f8743f6673f8ade2f8af89fb019d4b23f464ad84658734838c78"}}';
 
 /**
  * Function to fetch url that has no CORS header present via
@@ -32,7 +28,7 @@ const getURLProxy = async (apiurl, lable) => {
  * function for fetching response data from a rest-api
  * @param apiurl - url to fetch json data from
  */
-const getURL = async (apiurl) => {
+const getURL = async apiurl => {
     console.time('programUrl');
     const data = await fetch(`${apiurl}`);
     console.timeEnd('programUrl');
@@ -42,18 +38,20 @@ const getURL = async (apiurl) => {
     return resp;
 };
 /**
+ * Trims the slug recieved from svtApi in order to match new APi
+ * @param url the JSON value of url-key from SVT Api
+ */
+function trimUrl(url) {
+    const trimmed = url.split('/');
+    if (trimmed.length === 2) return trimmed[1];
+    return trimmed[2];
+}
+/**
  * Function that parses ONLY data from the SVT api at
  * https://www.svtplay.se/api/search_autocomplete_list
  * @param json - data to parse through the SimpleJson parser
  */
-
-function trimUrl(url) {
-    const trimmed = url.split('/');
-    if (trimmed.length == 2) return trimmed[1];
-    return trimmed[2];
-}
-
-const createSimpleJson = (json) => {
+const createSimpleJson = json => {
     console.time('simple');
     const data = { program: [] };
     for (let i = 0; i < json.length; i++) {
@@ -71,8 +69,8 @@ const createSimpleJson = (json) => {
 /**
  * Function that combines data from both SVT API endpoints
  * and converts them to one json object for each program.
- * @param {*} JsonSimple - parsed json from the @function createSimpleJson method
- * @param {*} JsonAdvanced  - parsed json from the @function createAdvancedJson method
+ * @param {Array} JsonSimple - parsed json from the createSimpleJson
+ * @param {Array} JsonAdvanced  - parsed json from the createAdvancedJson method
  */
 
 const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
@@ -94,42 +92,42 @@ const createAdvancedJson = (JsonSimple, JsonAdvanced) => {
 };
 
 /**
- * Sorted the result from @function createAdvancedJson
- * Sorts the objects by the value from popularity key
+ * Sorted the result from createAdvancedJson
+ * Sorts objects by value of popularity key
  */
 
-const createSortedJson = (json) => {
+const createSortedJson = json => {
     console.time('sorted');
     const sorted = json.program.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity));
     console.timeEnd('sorted');
     return sorted;
 };
 
-const getSvtVideoId = async (videoid) => {
+const getSvtVideoId = async videoid => {
     const json = await getURL(specificProgramUrl1 + videoid + specificProgramUrl2);
     const svtVideoId = json.data.listablesByEscenicId[0].videoSvtId;
     return svtVideoId;
 };
 
-const getM3u8Link = async (svtVideoId) => {
+const getM3u8Link = async svtVideoId => {
     const json = await getURL(programApiUrl + svtVideoId);
     let link = '';
     for (let i = 0; i < json.videoReferences.length; i++) {
-        if (json.videoReferences[i].format == 'hls') link = json.videoReferences[i].url;
+        if (json.videoReferences[i].format === 'hls') link = json.videoReferences[i].url;
     }
     const m3u8 = decodeURIComponent(link).replace(/-fmp4/g, '');
     return m3u8;
 };
 
-const getEpisodes = async (slug) => {
+const getEpisodes = async slug => {
     const url = `https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=TitlePage&variables={"titleSlugs":"${slug}"}&extensions={"persistedQuery":{"version":1,"sha256Hash":"4122efcb63970216e0cfb8abb25b74d1ba2bb7e780f438bbee19d92230d491c5"}}`;
     const json = await getURL(url);
     const data = await json.data.listablesBySlug[0].associatedContent;
     const resp = [];
     for (let i = 0; i < data.length; i++) {
-        resp.push(await data[i]);
+        resp.push(data[i]);
     }
-    return resp;
+    return Promise.all(resp);
 };
 
 // methods exports
