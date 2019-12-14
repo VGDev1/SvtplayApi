@@ -9,7 +9,7 @@ bluebird.promisifyAll(client);
 client.on('connect', () => {
     logger.info('connected to redis DB');
 });
-client.on('error', (err) => {
+client.on('error', err => {
     logger.error(`Error ${err}`);
 });
 
@@ -34,9 +34,9 @@ async function Cache(data) {
  * @param {string[]} array an array containting ["keyName", "Field1", "Value1". "Field2", "Value2"...]
  *
  */
-exports.testSetHmap = async (array) => {
+exports.testSetHmap = async array => {
     if (!Array.isArray(array)) throw new Error('An array is required to set hash in RedisDB');
-    if(array.length < 3) throw new Error("Length of array must be atleast 3. [keyName, Field, Value, ...] ")
+    if (array.length < 3) throw new Error('Length of array must be atleast 3. [keyName, Field, Value, ...] ');
     return client.hmsetAsync(array);
 };
 
@@ -62,7 +62,7 @@ async function getHashKey(entry) {
  */
 async function getCacheArray(data) {
     const array = [];
-    await getHashKey(data).then((resp) => array.push(resp));
+    await getHashKey(data).then(resp => array.push(resp));
     return {
         name: array[0].entry,
         svtId: array[0].keys.id,
@@ -73,11 +73,11 @@ async function getCacheArray(data) {
     };
 }
 
-exports.getKeys = async (key) => {
+exports.getKeys = async key => {
     return client.keysAsync(key);
 };
 
-exports.getKeyHash = async (key) => {
+exports.getKeyHash = async key => {
     return client.hgetallAsync(key);
 };
 
@@ -117,7 +117,7 @@ async function getKey(key) {
  * @param {*} n - numbers of popular programs wanted to be reieceved.
  */
 async function getMostPopular(n) {
-    const db = await getKey('*');
+    const db = await this.getKeys('*');
     return db.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity)).splice(0, n);
 }
 
