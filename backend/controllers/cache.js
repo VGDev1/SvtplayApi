@@ -1,6 +1,7 @@
 const fetch = require('node-fetch');
 const fs = require('fs');
 const path = require('path');
+const hashModel = require('../config/models');
 const redis = require('./redis');
 const logger = require('../config/logger');
 
@@ -64,36 +65,46 @@ exports.checkCache = async (req, res, next) => {
     return logger.info('Did not find any cache. Was an error thrown?');
 };
 
+/**
+ * function that parses data from RedisDB and returns correct JSON format
+ * @param {string[]} keys all keys recieved from DB
+ * @param {number} length the length of response wanted (used for most popular, etc)
+ * @returns {Promise<any[]>} test
+ */
+function parseCache(keys, length = keys.length) {
+    const getHash = async key => redis.getKeyHash(key);
+    const resp = keys.map(async key => {
+        const hash = await getHash(key);
+        return hashModel.hashModel(key, hash);
+    });
+    const data = length < keys.length ? Promise.all(resp).splice(0, length) : Promise.all(resp);
+    return data;
+}
+
 exports.checkNewCache = async (req, res, next) => {
     async function getById() {
-        if (req.params.id === 'AO') return redis.getKeys('*');
-        if (req.params.id === 'populart') return redis.getMostPopular(50);
-        if (req.params.id.match(/^[A-Z]{1}/)) return redis.getKeys(`${req.params.id}*`);
-        if (!/^[A-Z]{1}/.test(req.params.id)) {
-            return res.send({ error: 'Invalid request. Must be uppercase' }).end();
+        if (req.params.id === 'AO') {
+            const keys = await redis.getKeys('*');
+            return parseCache(keys);
         }
+        if (req.params.id === 'populart') {
+            const keys = await redis.getKeys('*');
+            return parseCache(keys, 50);
+        }
+        if (req.params.id.match(/^[A-Z]{1}/)) {
+            const keys = redis.getKeys(`${req.params.id}*`);
+            return parseCache(keys);
+        }
+        if (!/^[A-Z]{1}/.test(req.params.id)) return res.send({ error: 'Invalid request. Must be uppercase' }).end();
         return next();
     }
     try {
         console.time('newDB');
         const data = await getById();
         if (data.length === 0) return next();
-        const getHash = async key => redis.getKeyHash(key);
-        const resp = data.map(async key => {
-            const hash = await getHash(key);
-            return {
-                name: key,
-                id: hash.id,
-                slug: hash.slug,
-                thumbnail: hash.thumbnail,
-                popularity: hash.popularity,
-                type: hash.type,
-            };
-        });
-        const obj = await Promise.all(resp);
         console.timeEnd('newDB');
-        res.json({ program: obj });
+        return res.json({ program: data });
     } catch (e) {
-        logger.error(e.message);
+        return logger.error(e.message);
     }
 };

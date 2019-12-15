@@ -23,7 +23,6 @@ async function Cache(data) {
         client.hset(data[i].title, 'thumbnail', data[i].thumbnail);
         client.hset(data[i].title, 'popularity', data[i].popularity);
         client.hset(data[i].title, 'type', data[i].type);
-        client.hse;
     }
 }
 
@@ -89,7 +88,7 @@ exports.getKeyHash = async key => {
  */
 async function getKey(key) {
     return new Promise((fullfill, reject) => {
-        if (key == undefined || null) {
+        if (key === undefined || null) {
             return reject(new Error('Requested a key that does not exist'));
         }
         const data = [];
@@ -97,7 +96,7 @@ async function getKey(key) {
             if (err) {
                 return reject(logger.info(err));
             }
-            if (key == ('X*' || null || undefined)) {
+            if (key === ('X*' || null || undefined)) {
                 data.push({ error: `no entries in db for ${key}` });
                 return fullfill(data);
             }
@@ -113,18 +112,8 @@ async function getKey(key) {
 }
 
 /**
- * Gets the n most popular program on SVTPlay
- * @param {*} n - numbers of popular programs wanted to be reieceved.
- */
-async function getMostPopular(n) {
-    const db = await this.getKeys('*');
-    return db.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity)).splice(0, n);
-}
-
-/**
  * erases all local Redis db entries
  */
-
 function flushCache() {
     logger.info('flushing db...');
     client.flushall();
@@ -134,4 +123,3 @@ exports.cache = Cache;
 exports.flush = flushCache;
 exports.getCacheArray = getCacheArray;
 exports.getKey = getKey;
-exports.getMostPopular = getMostPopular;
