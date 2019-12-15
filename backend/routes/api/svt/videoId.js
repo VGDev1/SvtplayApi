@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { error } from '../../config/logger';
-import { getSvtVideoId } from '../../controllers/svtplay';
+import { error } from '../../../config/logger';
+import { getSvtVideoId } from '../../../controllers/svtplay';
 
 const router = Router();
 

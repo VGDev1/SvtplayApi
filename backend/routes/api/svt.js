@@ -5,10 +5,10 @@ import { hashModel } from '../../config/models';
 
 const router = Router();
 
-router.use(require('./program'));
-router.use(require('./episodes'));
-router.use(require('./videoId'));
-router.use(require('./m3u8'));
+router.use(require('./svt/program'));
+router.use(require('./svt/episodes'));
+router.use(require('./svt/videoId'));
+router.use(require('./svt/m3u8'));
 /**
  * Return 404 error if trying to access root path
  */

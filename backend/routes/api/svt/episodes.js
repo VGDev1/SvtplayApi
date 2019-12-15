@@ -1,7 +1,7 @@
-const express = require('express');
-const svtapi = require('../../controllers/svtplay');
+import { Router } from 'express';
+import svtapi from '../../../controllers/svtplay';
 
-const router = express.Router();
+const router = Router();
 
 router.get('/episodes/:slug', async (req, res, next) => {
     console.log(req.params.slug);

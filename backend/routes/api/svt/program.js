@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { cache } from '../../controllers/redis';
-import { checkNewCache } from '../../services/cache';
-import logger from '../../config/logger';
+import { cache } from '../../../controllers/redis';
+import { checkNewCache } from '../../../services/cache';
+import logger from '../../../config/logger';
 
-const svtapi = require('../../controllers/svtplay');
+const svtapi = require('../../../controllers/svtplay');
 
 const router = Router();
 

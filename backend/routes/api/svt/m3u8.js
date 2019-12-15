@@ -1,6 +1,6 @@
 import express from 'express';
-import logger from '../../config/logger';
-import { getM3u8Link } from '../../controllers/svtplay';
+import logger from '../../../config/logger';
+import { getM3u8Link } from '../../../controllers/svtplay';
 
 const router = express.Router();
 
