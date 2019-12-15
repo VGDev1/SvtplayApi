@@ -1,7 +1,6 @@
+import express from 'express';
 import api from './api';
 import proxy from './proxy';
-
-const express = require('express');
 
 const router = express.Router();
 

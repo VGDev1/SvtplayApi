@@ -1,6 +1,7 @@
 // const autofetch = require('./controllers/cache');
 import express from 'express';
 import compression from 'compression';
+import { logger } from 'express-winston';
 import index from './routes';
 import loaders from './loaders/express';
 import errorHandler from './loaders/errorHandler';
@@ -20,14 +21,21 @@ async function startServer() {
         next();
     });
 
-    app.use('/', index);
     // launch middleware
     loaders.app(app);
+    app.use('/', index);
+    app.use((req, res, next) => {
+        if (req.originalUrl === '/favicon.ico') {
+            res.writeHead(200, { 'Content-Type': 'image/x-icon' });
+            return res.end();
+        }
+        return next();
+    });
     errorHandler.app(app);
 
     // auto fetch and cache the response
     // autofetch.cache();
 }
-startServer().catch(e => console.error(e));
+startServer().catch(e => logger.error(e));
 
 module.exports = app;

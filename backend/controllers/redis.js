@@ -1,6 +1,6 @@
-const redis = require('redis');
-const bluebird = require('bluebird');
-const logger = require('../config/logger');
+import redis from 'redis';
+import bluebird from 'bluebird';
+import logger from '../config/logger';
 
 const client = redis.createClient();
 
@@ -102,10 +102,10 @@ async function getKey(key) {
             }
             console.time('loop_getcachearray');
             for (let i = 0, len = keys.length; i < len; i++) {
-                data.push(await getCacheArray(keys[i]));
+                Promise.all(data.push(getCacheArray(keys[i])));
             }
             console.timeEnd('loop_getcachearray');
-            const resp = await JSON.stringify(data);
+            const resp = JSON.stringify(data);
             return fullfill(JSON.parse(resp));
         });
     });

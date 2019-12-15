@@ -1,9 +1,8 @@
-const express = require('express');
-const redis = require('../../controllers/redis');
-const logger = require('../../config/logger');
-const svtapi = require('../../controllers/svtplay');
+import { Router } from 'express';
+import { error } from '../../config/logger';
+import { getSvtVideoId } from '../../controllers/svtplay';
 
-const router = express.Router();
+const router = Router();
 
 /**
  * Get Video id for certain program
@@ -11,10 +10,9 @@ const router = express.Router();
  */
 router.get('/getVideoId/:id', (req, res, next) => {
     console.log(req.params.id);
-    svtapi
-        .getSvtVideoId(req.params.id)
-        .then((r) => res.json({ svtVideoId: r }))
-        .catch((e) => logger.error(e));
+    getSvtVideoId(req.params.id)
+        .then(r => res.json({ svtVideoId: r }))
+        .catch(e => error(e));
 });
 
 module.exports = router;

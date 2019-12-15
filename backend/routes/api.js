@@ -7,6 +7,6 @@ router.get('/', (req, res) => {
 });
 
 /* API path for svt */
-router.use('/svt', require('./api/svt'));
+router.use('/svt', require('./api/svt').default);
 
 module.exports = router;

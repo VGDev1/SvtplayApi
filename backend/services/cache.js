@@ -1,9 +1,9 @@
-const fetch = require('node-fetch');
-const fs = require('fs');
-const path = require('path');
-const hashModel = require('../config/models');
-const redis = require('./redis');
-const logger = require('../config/logger');
+import fetch from 'node-fetch';
+import { writeFile } from 'fs';
+import path from 'path';
+import logger from '../config/logger';
+import { hashModel } from '../config/models';
+import redis from '../controllers/redis';
 
 /**
  * Autocaching method that fetches all programs endpoint
@@ -15,7 +15,7 @@ exports.cache = async (req, res) => {
     const atillo = await d1.json();
     console.time('cache');
     redis.cache(atillo);
-    fs.writeFile(path.join(__dirname, '../public/json/test.json'), null, err => {
+    writeFile(path.join(__dirname, '../public/json/test.json'), null, err => {
         if (err) return console.error(err);
         return console.log('successfully wrote test file');
     });
@@ -26,7 +26,7 @@ exports.cache = async (req, res) => {
 /**
  * Check if cache exists, else go to next router.get for same path
  */
-exports.checkCache = async (req, res, next) => {
+export const checkCache = async (req, res, next) => {
     console.time('getById');
     async function getById() {
         if (req.params.id === 'AO') return redis.getKey('*');
@@ -71,17 +71,17 @@ exports.checkCache = async (req, res, next) => {
  * @param {number} length the length of response wanted (used for most popular, etc)
  * @returns {Promise<any[]>} test
  */
-function parseCache(keys, length = keys.length) {
+async function parseCache(keys) {
     const getHash = async key => redis.getKeyHash(key);
     const resp = keys.map(async key => {
         const hash = await getHash(key);
-        return hashModel.hashModel(key, hash);
+        return hashModel(key, hash);
     });
-    const data = length < keys.length ? Promise.all(resp).splice(0, length) : Promise.all(resp);
+    const data = await Promise.all(resp);
     return data;
 }
 
-exports.checkNewCache = async (req, res, next) => {
+export const checkNewCache = async (req, res, next) => {
     async function getById() {
         if (req.params.id === 'AO') {
             const keys = await redis.getKeys('*');
@@ -89,7 +89,9 @@ exports.checkNewCache = async (req, res, next) => {
         }
         if (req.params.id === 'populart') {
             const keys = await redis.getKeys('*');
-            return parseCache(keys, 50);
+            const data = await parseCache(keys);
+            const pops = data.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity));
+            return pops;
         }
         if (req.params.id.match(/^[A-Z]{1}/)) {
             const keys = redis.getKeys(`${req.params.id}*`);

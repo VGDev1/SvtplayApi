@@ -1,4 +1,4 @@
-const winston = require('winston');
+import winston from 'winston';
 
 // Winston logger and settings for creating log entires
 const logger = winston.createLogger({

@@ -1,8 +1,8 @@
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const morgan = require('morgan');
-const logger = require('../config/logger');
+import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import logger from '../config/logger';
 
 exports.app = app => {
     // view engine setup
