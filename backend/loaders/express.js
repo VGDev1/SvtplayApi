@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import logger from '../config/logger';
 
-exports.app = app => {
+exports.express = app => {
     // view engine setup
     app.set('views', path.join(__dirname, '/../views'));
     app.set('view engine', 'pug');

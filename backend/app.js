@@ -22,7 +22,7 @@ async function startServer() {
     });
 
     // launch middleware
-    loaders.app(app);
+    loaders.express(app);
     app.use('/', index);
     app.use((req, res, next) => {
         if (req.originalUrl === '/favicon.ico') {

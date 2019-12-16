@@ -3,7 +3,7 @@ import { writeFile } from 'fs';
 import path from 'path';
 import logger from '../config/logger';
 import { hashModel } from '../config/models';
-import redis from '../controllers/redis';
+import { cache, getKeys, getKeyHash } from '../controllers/redis';
 
 /**
  * Autocaching method that fetches all programs endpoint
@@ -14,7 +14,7 @@ exports.cache = async (req, res) => {
     const d1 = await fetch('http://localhost:3000/api/svt/program/AO');
     const atillo = await d1.json();
     console.time('cache');
-    redis.cache(atillo);
+    cache(atillo);
     writeFile(path.join(__dirname, '../public/json/test.json'), null, err => {
         if (err) return console.error(err);
         return console.log('successfully wrote test file');
@@ -29,9 +29,9 @@ exports.cache = async (req, res) => {
 export const checkCache = async (req, res, next) => {
     console.time('getById');
     async function getById() {
-        if (req.params.id === 'AO') return redis.getKey('*');
-        if (req.params.id === 'populart') return redis.getMostPopular(50);
-        if (req.params.id.match(/^[A-Z]{1}/)) return redis.getKey(`${req.params.id}*`);
+        if (req.params.id === 'AO') return getKeys('*');
+        // if (req.params.id === 'populart') return getMostPopular(50);
+        if (req.params.id.match(/^[A-Z]{1}/)) return getKeys(`${req.params.id}*`);
         if (!/^[A-Z]{1}/.test(req.params.id)) {
             return res.send({ error: 'Invalid request. Must be uppercase' }).end();
         }
@@ -72,7 +72,7 @@ export const checkCache = async (req, res, next) => {
  * @returns {Promise<any[]>} test
  */
 async function parseCache(keys) {
-    const getHash = async key => redis.getKeyHash(key);
+    const getHash = async key => getKeyHash(key);
     const resp = keys.map(async key => {
         const hash = await getHash(key);
         return hashModel(key, hash);
@@ -84,17 +84,17 @@ async function parseCache(keys) {
 export const checkNewCache = async (req, res, next) => {
     async function getById() {
         if (req.params.id === 'AO') {
-            const keys = await redis.getKeys('*');
+            const keys = await getKeys('*');
             return parseCache(keys);
         }
         if (req.params.id === 'populart') {
-            const keys = await redis.getKeys('*');
+            const keys = await getKeys('*');
             const data = await parseCache(keys);
             const pops = data.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity));
             return pops;
         }
         if (req.params.id.match(/^[A-Z]{1}/)) {
-            const keys = redis.getKeys(`${req.params.id}*`);
+            const keys = await getKeys(`${req.params.id}*`);
             return parseCache(keys);
         }
         if (!/^[A-Z]{1}/.test(req.params.id)) return res.send({ error: 'Invalid request. Must be uppercase' }).end();

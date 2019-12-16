@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { error } from '../../../config/logger';
+import logger from '../../../config/logger';
 import { getSvtVideoId } from '../../../controllers/svtplay';
 
 const router = Router();
@@ -12,7 +12,7 @@ router.get('/getVideoId/:id', (req, res, next) => {
     console.log(req.params.id);
     getSvtVideoId(req.params.id)
         .then(r => res.json({ svtVideoId: r }))
-        .catch(e => error(e));
+        .catch(e => logger.error(e));
 });
 
 module.exports = router;

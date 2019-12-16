@@ -12,7 +12,7 @@ const specificProgramUrl2 = '"}&extensions={"persistedQuery":{"version":1,"sha25
  * @param apiurl - url to fetch
  * @param lable - lable is only for time debug purposes
  */
-const getURLProxy = async (apiurl, lable) => {
+export const getURLProxy = async (apiurl, lable) => {
     console.time(`fetch${lable}`);
     const data = await fetch(`http://127.0.0.1:8080/${apiurl}`, {
         headers: { 'x-requested-with': 'api' },
@@ -28,7 +28,7 @@ const getURLProxy = async (apiurl, lable) => {
  * function for fetching response data from a rest-api
  * @param apiurl - url to fetch json data from
  */
-const getURL = async apiurl => {
+export const getURL = async apiurl => {
     console.time('programUrl');
     const data = await fetch(`${apiurl}`);
     console.timeEnd('programUrl');
@@ -103,13 +103,13 @@ const createSortedJson = json => {
     return sorted;
 };
 
-const getSvtVideoId = async videoid => {
+export const getSvtVideoId = async videoid => {
     const json = await getURL(specificProgramUrl1 + videoid + specificProgramUrl2);
     const svtVideoId = json.data.listablesByEscenicId[0].videoSvtId;
     return svtVideoId;
 };
 
-const getM3u8Link = async svtVideoId => {
+export const getM3u8Link = async svtVideoId => {
     const json = await getURL(programApiUrl + svtVideoId);
     let link = '';
     for (let i = 0; i < json.videoReferences.length; i++) {
@@ -119,7 +119,7 @@ const getM3u8Link = async svtVideoId => {
     return m3u8;
 };
 
-const getEpisodes = async slug => {
+export const getEpisodes = async slug => {
     const url = `https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=TitlePage&variables={"titleSlugs":"${slug}"}&extensions={"persistedQuery":{"version":1,"sha256Hash":"4122efcb63970216e0cfb8abb25b74d1ba2bb7e780f438bbee19d92230d491c5"}}`;
     const json = await getURL(url);
     const data = await json.data.listablesBySlug[0].associatedContent;
@@ -131,14 +131,9 @@ const getEpisodes = async slug => {
 };
 
 // methods exports
-exports.getURLProxy = getURLProxy;
-exports.getURL = getURL;
 exports.createSimpleJson = createSimpleJson;
 exports.createAdvancedJson = createAdvancedJson;
 exports.createSortedJson = createSortedJson;
-exports.getSvtVideoId = getSvtVideoId;
-exports.getM3u8Link = getM3u8Link;
-exports.getEpisodes = getEpisodes;
 // variable exports
 exports.programUrl = programUrl;
 exports.programUrlSimple = programUrlSimple;

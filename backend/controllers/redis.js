@@ -16,7 +16,7 @@ client.on('error', err => {
 /**
  * @deprecated replaced by cache.js controller
  */
-async function Cache(data) {
+export async function cache(data) {
     for (let i = 0; i < data.length; i++) {
         client.hset(data[i].title, 'id', data[i].id);
         client.hset(data[i].title, 'slug', data[i].slug);
@@ -59,7 +59,7 @@ async function getHashKey(entry) {
  * It then passes the array forward to @function getHashKey ,
  * takes the response, parses and returns it as an Object
  */
-async function getCacheArray(data) {
+export async function getCacheArray(data) {
     const array = [];
     await getHashKey(data).then(resp => array.push(resp));
     return {
@@ -72,13 +72,13 @@ async function getCacheArray(data) {
     };
 }
 
-exports.getKeys = async key => {
+export async function getKeys(key) {
     return client.keysAsync(key);
-};
+}
 
-exports.getKeyHash = async key => {
+export async function getKeyHash(key) {
     return client.hgetallAsync(key);
-};
+}
 
 /**
  * Get keys from Redis DB by pattern matching
@@ -119,7 +119,6 @@ function flushCache() {
     client.flushall();
 }
 
-exports.cache = Cache;
 exports.flush = flushCache;
 exports.getCacheArray = getCacheArray;
 exports.getKey = getKey;
