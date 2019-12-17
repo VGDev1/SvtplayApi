@@ -4,7 +4,7 @@ import { getURLProxy } from '../controllers/svtplay';
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
     const { url } = req.query;
     logger.info(url);
     try {
@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
         const resp = await data.json();
         return res.json({ message: resp });
     } catch (e) {
-        return logger.error(e);
+        return next(e);
     }
 });
 

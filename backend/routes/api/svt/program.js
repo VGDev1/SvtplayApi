@@ -14,11 +14,15 @@ const router = Router();
  * populart - response with the 50 most popular programs right now
  */
 router.get('/program/:id', checkNewCache, async (req, res, next) => {
-    logger.info(req.params.id);
-    console.log('hej');
-    const data = await getAllPrograms();
-    cache(data);
-    return res.json({ program: data });
+    try {
+        logger.info(req.params.id);
+        console.log('hej');
+        const data = await getAllPrograms();
+        cache(data);
+        return res.json({ program: data });
+    } catch (e) {
+        return next(e);
+    }
 });
 
 module.exports = router;

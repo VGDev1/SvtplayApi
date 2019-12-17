@@ -29,21 +29,23 @@ export const getURLProxy = async (apiurl, lable) => {
  * function for fetching response data from a rest-api
  * @param apiurl - url to fetch json data from
  */
-export const getURL = async apiurl => {
+export async function getURL(apiurl) {
     console.time('programUrl');
     const data = await fetch(`${apiurl}`);
     const resp = await data.json();
     console.timeEnd('programUrl');
     return resp;
-};
+}
 
-export const getSvtVideoId = async videoid => {
-    const json = await getURL(specificProgramUrl1 + videoid + specificProgramUrl2);
+export async function getSvtVideoId(videoid) {
+    const json = await getURL(specificProgramUrl1 + videoid + specificProgramUrl2).catch(e => {
+        return logger.error(e.message);
+    });
     const svtVideoId = json.data.listablesByEscenicId[0].videoSvtId;
     return svtVideoId;
-};
+}
 
-export const getM3u8Link = async svtVideoId => {
+export async function getM3u8Link(svtVideoId) {
     const json = await getURL(programApiUrl + svtVideoId);
     let link = '';
     for (let i = 0; i < json.videoReferences.length; i++) {
@@ -51,9 +53,9 @@ export const getM3u8Link = async svtVideoId => {
     }
     const m3u8 = decodeURIComponent(link).replace(/-fmp4/g, '');
     return m3u8;
-};
+}
 
-export const getEpisodes = async slug => {
+export async function getEpisodes(slug) {
     const url = `https://api.svt.se/contento/graphql?ua=svtplaywebb-play-render-prod-client&operationName=TitlePage&variables={"titleSlugs":"${slug}"}&extensions={"persistedQuery":{"version":1,"sha256Hash":"4122efcb63970216e0cfb8abb25b74d1ba2bb7e780f438bbee19d92230d491c5"}}`;
     const json = await getURL(url);
     const data = await json.data.listablesBySlug[0].associatedContent;
@@ -62,7 +64,7 @@ export const getEpisodes = async slug => {
         resp.push(data[i]);
     }
     return Promise.all(resp);
-};
+}
 
 /**
  * Function for getting all programs from both svt API's
