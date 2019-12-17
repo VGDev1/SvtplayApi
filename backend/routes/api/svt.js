@@ -1,7 +1,4 @@
 import { Router } from 'express';
-import { getKeys, getKeyHash } from '../../controllers/redis';
-import logger from '../../config/logger';
-import { hashModel } from '../../config/models';
 
 const router = Router();
 
@@ -19,20 +16,7 @@ router.get('/', (req, res) => {
 /* DEBUG ROUTE */
 
 router.get('/test', async (req, res) => {
-    try {
-        console.time('newDB');
-        const data = await getKeys('*');
-        const getHash = async key => getKeyHash(key);
-        const resp = data.map(async key => {
-            const hash = await getHash(key);
-            return hashModel(key, hash);
-        });
-        const obj = await Promise.all(resp);
-        console.timeEnd('newDB');
-        res.json({ program: obj });
-    } catch (e) {
-        logger.error(e.message);
-    }
+    return res.status(200).end();
 });
 
 export default router;

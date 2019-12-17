@@ -1,29 +1,10 @@
+/* eslint-disable import/no-named-as-default-member */
 import { Router } from 'express';
-import { cache } from '../../../controllers/redis';
-import { checkNewCache } from '../../../services/cache';
+import { checkNewCache, cache } from '../../../services/cache';
 import logger from '../../../config/logger';
-
-const svtapi = require('../../../controllers/svtplay');
+import { getAllPrograms } from '../../../controllers/svtplay';
 
 const router = Router();
-
-/**
- * Function for getting all programs from both svt API's
- *  and returning parsed, fully functional json for backend response
- */
-const getAllPrograms = async () => {
-    const getSimple = await svtapi.getURLProxy(svtapi.programUrlSimple, 'simple');
-    const simpleJson = svtapi.createSimpleJson(getSimple);
-    const AdvancedJson = svtapi.getURL(svtapi.programUrl, 'programUrl');
-    const pr = Promise.all([simpleJson, AdvancedJson]);
-    try {
-        const p = await pr;
-        const d = svtapi.createAdvancedJson(p[0], p[1]);
-        return svtapi.createSortedJson(d);
-    } catch (e) {
-        return logger.error(e);
-    }
-};
 
 /**
  * Router for getting a json response of programs
@@ -34,6 +15,7 @@ const getAllPrograms = async () => {
  */
 router.get('/program/:id', checkNewCache, async (req, res, next) => {
     logger.info(req.params.id);
+    console.log('hej');
     const data = await getAllPrograms();
     cache(data);
     return res.json({ program: data });

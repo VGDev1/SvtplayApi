@@ -1,30 +1,50 @@
-import fetch from 'node-fetch';
 import { writeFile } from 'fs';
 import path from 'path';
 import logger from '../config/logger';
-import { hashModel } from '../config/models';
-import { cache, getKeys, getKeyHash } from '../controllers/redis';
+import { hashModel, hashArrays } from '../config/models';
+import { getKeys, getKeyHash, setHashMap } from '../controllers/redis';
+import { getAllPrograms } from '../controllers/svtplay';
+
+/**
+ * caches an object in RedisDB
+ * @param {{string: any}} data json object to cache
+ * @returns {Promise<string>} success string or error
+ */
+export async function cache(data) {
+    try {
+        data.map(async (obj, i) => {
+            const fv = await hashArrays(obj);
+            setHashMap(data[i].title, fv[0], fv[1]).catch(e => logger.error(e.message));
+        });
+        return 'success';
+    } catch (e) {
+        return logger.error(e);
+    }
+}
 
 /**
  * Autocaching method that fetches all programs endpoint
  * and stores the response to redis
  */
-exports.cache = async (req, res) => {
-    console.time('AUTO FETCH');
-    const d1 = await fetch('http://localhost:3000/api/svt/program/AO');
-    const atillo = await d1.json();
-    console.time('cache');
-    cache(atillo);
-    writeFile(path.join(__dirname, '../public/json/test.json'), null, err => {
-        if (err) return console.error(err);
-        return console.log('successfully wrote test file');
+export const autoCache = async (req, res) => {
+    console.time('fetch');
+    const program = await getAllPrograms();
+    console.timeEnd('fetch');
+    console.time('write');
+    writeFile(path.join(__dirname, '../public/test.json'), JSON.stringify(program), err => {
+        if (err) return logger.error(err.message);
+        return null;
     });
+    console.timeEnd('write');
+    console.time('cache');
+    cache(program);
     console.timeEnd('cache');
-    console.timeEnd('AUTO FETCH');
 };
 
 /**
  * Check if cache exists, else go to next router.get for same path
+ * @deprecated
+ * ! NOT IN USE
  */
 export const checkCache = async (req, res, next) => {
     console.time('getById');
@@ -48,12 +68,8 @@ export const checkCache = async (req, res, next) => {
             const sorted = data.sort((a, b) => {
                 const x = a.name.toLowerCase();
                 const y = b.name.toLowerCase();
-                if (x < y) {
-                    return -1;
-                }
-                if (x > y) {
-                    return 1;
-                }
+                if (x < y) return -1;
+                if (x > y) return 1;
                 return 0;
             });
             return res.json({ program: sorted });
@@ -69,11 +85,11 @@ export const checkCache = async (req, res, next) => {
  * function that parses data from RedisDB and returns correct JSON format
  * @param {string[]} keys all keys recieved from DB
  * @param {number} length the length of response wanted (used for most popular, etc)
- * @returns {Promise<any[]>} test
+ * @returns {Promise<any[]>}
  */
 async function parseCache(keys) {
     const getHash = async key => getKeyHash(key);
-    const resp = keys.map(async key => {
+    const resp = keys.map(async (key, i) => {
         const hash = await getHash(key);
         return hashModel(key, hash);
     });
@@ -81,23 +97,30 @@ async function parseCache(keys) {
     return data;
 }
 
+/**
+ * Middleware that checks redisDB for cache based on request param ID
+ */
 export const checkNewCache = async (req, res, next) => {
+    const query = decodeURIComponent(req.params.id);
     async function getById() {
-        if (req.params.id === 'AO') {
+        if (query === 'AO') {
+            console.time('keys');
             const keys = await getKeys('*');
+            console.timeEnd('keys');
+            console.time('cache');
             return parseCache(keys);
         }
-        if (req.params.id === 'populart') {
+        if (query === 'populart') {
             const keys = await getKeys('*');
             const data = await parseCache(keys);
             const pops = data.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity));
             return pops;
         }
-        if (req.params.id.match(/^[A-Z]{1}/)) {
-            const keys = await getKeys(`${req.params.id}*`);
+        if (query.match(/^[A-Z]{1}/) || query.match(/[Ä-Ö]{1}/)) {
+            const keys = await getKeys(`${query}*`);
             return parseCache(keys);
         }
-        if (!/^[A-Z]{1}/.test(req.params.id)) return res.send({ error: 'Invalid request. Must be uppercase' }).end();
+        if (!/^[A-Z]{1}/.test(query)) return res.send({ error: 'Invalid request. Must be uppercase' }).end();
         return next();
     }
     try {

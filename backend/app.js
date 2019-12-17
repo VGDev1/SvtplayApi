@@ -1,10 +1,11 @@
 // const autofetch = require('./controllers/cache');
 import express from 'express';
 import compression from 'compression';
-import { logger } from 'express-winston';
+import logger from './config/logger';
 import index from './routes';
 import loaders from './loaders/express';
 import errorHandler from './loaders/errorHandler';
+import { autoCache } from './services/cache';
 
 // const express = require('express');
 
@@ -34,8 +35,8 @@ async function startServer() {
     errorHandler.app(app);
 
     // auto fetch and cache the response
-    // autofetch.cache();
+    autoCache().catch(e => console.error(e.message));
 }
-startServer().catch(e => logger.error(e));
+startServer().catch(e => logger.error(e.message));
 
 module.exports = app;
