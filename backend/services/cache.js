@@ -113,7 +113,7 @@ export const checkNewCache = async (req, res, next) => {
         if (query === 'populart') {
             const keys = await getKeys('*');
             const data = await parseCache(keys);
-            const pops = data.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity));
+            const pops = data.sort((a, b) => parseFloat(b.popularity) - parseFloat(a.popularity)).splice(0, 50);
             return pops;
         }
         if (query.match(/^[A-Z]{1}/) || query.match(/[Ä-Ö]{1}/)) {
