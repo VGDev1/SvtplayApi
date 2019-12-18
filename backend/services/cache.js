@@ -59,7 +59,7 @@ export const checkCache = async (req, res, next) => {
     }
     console.timeEnd('getById');
     console.time('getDB');
-    const data = await getById().catch(e => console.log(e));
+    const data = await getById().catch(e => next(e.message));
     console.timeEnd('getDB');
     try {
         if (data.length === 0) return next();
@@ -76,7 +76,7 @@ export const checkCache = async (req, res, next) => {
         }
         return next();
     } catch (e) {
-        console.log(e);
+        logger.error(e);
     }
     return logger.info('Did not find any cache. Was an error thrown?');
 };

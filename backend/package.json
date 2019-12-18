@@ -31,6 +31,7 @@
         "pug": "^2.0.4",
         "redis": "^2.8.0",
         "redis-rejson": "^1.0.0",
+        "serve-favicon": "^2.5.0",
         "winston": "^3.2.1"
     },
     "devDependencies": {

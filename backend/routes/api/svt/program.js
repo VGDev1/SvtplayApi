@@ -16,7 +16,6 @@ const router = Router();
 router.get('/program/:id', checkNewCache, async (req, res, next) => {
     try {
         logger.info(req.params.id);
-        console.log('hej');
         const data = await getAllPrograms();
         cache(data);
         return res.json({ program: data });

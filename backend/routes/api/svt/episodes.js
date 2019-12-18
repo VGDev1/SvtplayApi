@@ -5,7 +5,6 @@ const router = Router();
 
 router.get('/episodes/:slug', async (req, res, next) => {
     try {
-        console.log(req.params.slug);
         const data = await getEpisodes(req.params.slug);
         return res.json({ data });
     } catch (e) {
