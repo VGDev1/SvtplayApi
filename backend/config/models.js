@@ -9,7 +9,7 @@ export async function hashModel(key, data) {
         title: key,
         id: data.id,
         slug: data.slug,
-        thumbnail: data.thumbnail.replace(140, 400),
+        thumbnail: data.thumbnail,
         popularity: data.popularity,
         type: data.type,
     };
