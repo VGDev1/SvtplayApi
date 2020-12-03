@@ -2,5 +2,7 @@
 .vscode
 .metals
 .eslintrc.json
+.DS_Store
+package-lock.json
 **/logs/
 **/run.sh

@@ -77,9 +77,7 @@ export async function getAllPrograms() {
     const pr = Promise.all([simpleJson, AdvancedJson]);
     try {
         const p = await pr;
-        console.log(p[1]);
         const d = createAdvancedJson(p[0], p[1]);
-        console.log(d);
         return createSortedJson(d);
     } catch (e) {
         return logger.error(e);
