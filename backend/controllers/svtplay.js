@@ -31,7 +31,7 @@ export const getURLProxy = async (apiurl, lable) => {
  */
 export async function getURL(apiurl) {
     console.time('programUrl');
-    const data = await fetch(`${apiurl}`);
+    const data = await fetch(`${apiurl}`, {headers: {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36"}});
     const resp = await data.json();
     console.timeEnd('programUrl');
     return resp;
@@ -39,7 +39,7 @@ export async function getURL(apiurl) {
 
 export async function getSvtVideoId(videoid) {
     const json = await getURL(specificProgramUrl1 + videoid + specificProgramUrl2).catch(e => {
-        return logger.error(e.message);
+        return logger.error(e);
     });
     const svtVideoId = json.data.listablesByEscenicId[0].videoSvtId;
     return svtVideoId;
@@ -77,7 +77,9 @@ export async function getAllPrograms() {
     const pr = Promise.all([simpleJson, AdvancedJson]);
     try {
         const p = await pr;
+        console.log(p[1]);
         const d = createAdvancedJson(p[0], p[1]);
+        console.log(d);
         return createSortedJson(d);
     } catch (e) {
         return logger.error(e);

@@ -32,7 +32,7 @@ export const autoCache = async (req, res) => {
     console.timeEnd('fetch');
     console.time('write');
     writeFile(path.join(__dirname, '../public/test.json'), JSON.stringify(program), err => {
-        if (err) return logger.error(err.message);
+        if (err) return console.log(err);
         return null;
     });
     console.timeEnd('write');
@@ -130,6 +130,6 @@ export const checkNewCache = async (req, res, next) => {
         console.timeEnd('newDB');
         return res.json({ program: data });
     } catch (e) {
-        return logger.error(e.message);
+        return logger.error(e);
     }
 };

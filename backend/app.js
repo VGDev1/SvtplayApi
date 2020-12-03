@@ -30,8 +30,8 @@ async function startServer() {
     errorHandler.app(app);
 
     // auto fetch and cache the response
-    autoCache().catch(e => logger.error(e.message));
+    await autoCache();
 }
-startServer().catch(e => logger.error(e.message));
+startServer().catch(e => console.log(e));
 
 module.exports = app;
