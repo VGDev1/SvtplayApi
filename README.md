@@ -20,6 +20,7 @@
   - [Installation](#Istallation)
   - [Requirments](#Requirments)
   - [Run](#Run)
+  - [Contribute](#Contribute)
 
 ## What does it do
 
@@ -61,3 +62,7 @@ This REST API provides an easy and fast way to interact with SvtPlay's servers. 
 2. Start Redis server: `redis-server`
 3. Start cors proxy: `npm run proxy`
 4. Start api: `npm run api`
+
+
+## Contribute
+This project is not maintained anymore.
