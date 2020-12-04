@@ -60,4 +60,4 @@ This REST API provides an easy and fast way to interact with SvtPlay's servers. 
 1. Change directory to project root `cd SvtplayApi`
 2. Start Redis server: `redis-server`
 3. Start cors proxy: `npm run proxy`
-4. Start api: `npm run api`n
+4. Start api: `npm run api`
