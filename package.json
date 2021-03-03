@@ -31,7 +31,7 @@
         "morgan": "^1.9.1",
         "node": "^13.1.0",
         "node-fetch": "^2.6.1",
-        "pug": "^2.0.4",
+        "pug": "^3.0.1",
         "redis": "^2.8.0",
         "redis-rejson": "^1.0.0",
         "serve-favicon": "^2.5.0",
