@@ -30,7 +30,7 @@
         "http-proxy-middleware": "^0.20.0",
         "morgan": "^1.9.1",
         "node": "^13.1.0",
-        "node-fetch": "^2.6.1",
+        "node-fetch": "^2.6.7",
         "pug": "^2.0.4",
         "redis": "^2.8.0",
         "redis-rejson": "^1.0.0",
